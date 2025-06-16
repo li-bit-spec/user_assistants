@@ -1,333 +1,273 @@
 <template>
   <div class="p-4 bg-white rounded shadow">
-    <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center">
-        <!-- <h2 class="text-xl font-bold">技术支持</h2> -->
-        <el-button
-          type="primary"
-          class="ml-2"
-          @click="isEditing = !isEditing"
-        >
-          {{ isEditing ? '取消' : '编辑' }}
-        </el-button>
-        <el-button
-          v-if="isEditing"
-          type="success"
-          class="ml-2"
-          @click="saveContent"
-        >
-          保存
-        </el-button>
-      </div>
+    <div class="flex items-center mb-4">
+      <el-button
+        type="primary"
+        size="small"
+        class="mr-2"
+        @click="toggleEdit"
+      >
+        {{ isEditing ? '取消' : '编辑' }}
+      </el-button>
+      <el-button
+        v-if="isEditing"
+        type="success"
+        size="small"
+        class="mr-2"
+        @click="saveContent"
+      >
+        保存
+      </el-button>
+      <h2 class="text-xl font-bold mr-6">技术支持</h2>
     </div>
 
     <!-- 内容展示/编辑区域 -->
-    <div v-if="!isEditing" v-html="content" class="prose max-w-none p-4 bg-gray-50 rounded"></div>
-    <div v-else class="min-h-[500px]">
-      <QuillEditor
-        v-model:content="editingContent"
-        :options="editorOptions"
-        contentType="html"
-        class="h-[500px]"
-        toolbar="full"
-      />
+    <div class="content-area">
+      <div style="border: 1px solid #ccc; margin-top: 10px">
+        <Toolbar
+          :editor="editorRef"
+          :defaultConfig="toolbarConfig"
+          :mode="mode"
+          style="border-bottom: 1px solid #ccc"
+          :class="{ 'hidden': !isEditing }"
+        />
+        <Editor
+          :defaultConfig="editorConfig"
+          :mode="mode"
+          v-model="editingContent"
+          style="height: 400px; overflow-y: hidden"
+          @onCreated="handleCreated"
+          @onChange="handleChange"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import '@wangeditor/editor/dist/css/style.css'
+import { ref, shallowRef, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import * as supportApi from '@/api/support'
-import { QuillEditor } from '@vueup/vue-quill'
-import '@vueup/vue-quill/dist/vue-quill.snow.css'
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import { uploadFile } from '@/api/upload'
-import Quill from 'quill'
-import ImageResize from 'quill-image-resize-vue'
-
-// 注册图片调整模块
-Quill.register('modules/imageResize', ImageResize)
 
 const isEditing = ref(false)
-const content = ref('技术支持内容')
-const editingContent = ref(content.value)
-const loading = ref(false)
-const supportId = ref(null)
+const content = ref('')
+const editingContent = ref('')
+const editorRef = shallowRef()
 
-// 添加基础URL配置
-const BASE_URL = 'http://localhost:8090' // 根据您的实际后端地址修改
-
-// 处理图片URL
-const processImageUrl = (url) => {
-  if (!url) return ''
-  // 如果URL已经是完整的，直接返回
-  if (url.startsWith('http')) return url
-  // 确保URL以/api开头
-  if (!url.startsWith('/api')) {
-    url = `/api${url}`
-  }
-  return url
-}
-
-// 修改 Quill 编辑器的配置
-const editorOptions = {
-  theme: 'snow',
-  modules: {
-    toolbar: {
-      container: [
-        ['bold', 'italic', 'underline', 'strike'],
-        ['blockquote', 'code-block'],
-        [{ 'header': 1 }, { 'header': 2 }],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        [{ 'script': 'sub' }, { 'script': 'super' }],
-        [{ 'indent': '-1' }, { 'indent': '+1' }],
-        [{ 'direction': 'rtl' }],
-        [{ 'size': ['small', false, 'large', 'huge'] }],
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-        [{ 'color': [] }, { 'background': [] }],
-        [{ 'font': [] }],
-        [{ 'align': [] }],
-        ['clean'],
-        ['link', 'image']
-      ],
-      handlers: {
-        image: function() {
-          const input = document.createElement('input')
-          input.setAttribute('type', 'file')
-          input.setAttribute('accept', 'image/*')
-          input.click()
-
-          input.onchange = async () => {
-            const file = input.files[0]
-            if (file) {
-              try {
-                console.log('准备上传文件:', file)
-                const response = await uploadFile(file)
-                console.log('上传响应:', response)
-                
-                if (response.code === 0 && response.data && response.data.code === 0) {
-                  const quill = this.quill
-                  const range = quill.getSelection(true)
-                  // 处理图片URL，使用相对路径
-                  const imageUrl = processImageUrl(response.data.data)
-                  console.log('处理后的图片URL:', imageUrl)
-                  
-                  // 插入图片
-                  quill.insertEmbed(range.index, 'image', imageUrl)
-                } else {
-                  console.error('上传响应格式错误:', response)
-                  throw new Error('上传失败')
-                }
-              } catch (error) {
-                console.error('图片上传失败:', error)
-                ElMessage.error('图片上传失败')
-              }
-            }
+// 编辑器配置
+const mode = 'default'
+const toolbarConfig = {}
+const editorConfig = {
+  placeholder: '请输入内容...',
+  MENU_CONF: {
+    uploadImage: {
+      async customUpload(file, insertFn) {
+        try {
+          const response = await uploadFile(file)
+          let url = ''
+          if (response.code === 0 && response.data && response.data.code === 0) {
+            url = response.data.data
+          } else if (response.code === 0 && response.data) {
+            url = response.data
           }
+          if (url) {
+            insertFn(url, '', '')
+          } else {
+            ElMessage.error('图片上传失败')
+          }
+        } catch (e) {
+          ElMessage.error('图片上传失败')
         }
       }
-    },
-    imageResize: {
-      displaySize: true,
-      modules: ['Resize', 'DisplaySize', 'Toolbar']
     }
   }
 }
 
-// 添加处理 base64 图片的函数
-const convertBase64ToFile = (base64String) => {
-  const arr = base64String.split(',')
-  const mime = arr[0].match(/:(.*?);/)[1]
-  const bstr = atob(arr[1])
-  let n = bstr.length
-  const u8arr = new Uint8Array(n)
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n)
+let supportId = null
+
+// 编辑器回调函数
+const handleCreated = (editor) => {
+  editorRef.value = editor // 记录 editor 实例
+  if (!isEditing.value) {
+    editor.disable()
   }
-  return new File([u8arr], `image-${Date.now()}.${mime.split('/')[1]}`, { type: mime })
+  // 如果已经有内容，则设置内容
+  if (content.value) {
+    editor.setHtml(content.value)
+  }
 }
 
-// 处理编辑器内容中的图片
-const processContentImages = async (content) => {
-  const tempDiv = document.createElement('div')
-  tempDiv.innerHTML = content
-  const images = tempDiv.getElementsByTagName('img')
-  
-  for (let img of images) {
-    const src = img.getAttribute('src')
-    if (src.startsWith('data:image')) {
-      try {
-        const file = convertBase64ToFile(src)
-        console.log('准备上传文件:', file)
-        const response = await uploadFile(file)
-        console.log('上传响应:', response)
-        
-        if (response.code === 0 && response.data && response.data.code === 0) {
-          // 处理图片URL，使用相对路径
-          const imageUrl = processImageUrl(response.data.data)
-          console.log('处理后的图片URL:', imageUrl)
-          img.setAttribute('src', imageUrl)
-        } else {
-          console.error('上传响应格式错误:', response)
-          throw new Error('上传失败')
-        }
-      } catch (error) {
-        console.error('图片上传失败:', error)
-        ElMessage.error('图片上传失败')
-      }
+const handleChange = (editor) => {
+  editingContent.value = editor.getHtml()
+}
+
+// 切换编辑状态
+const toggleEdit = () => {
+  isEditing.value = !isEditing.value
+  const editor = editorRef.value
+  if (editor) {
+    if (isEditing.value) {
+      editor.enable()
+    } else {
+      editor.disable()
     }
   }
-  return tempDiv.innerHTML
 }
 
-// 添加图片调整功能
-const initImageResize = () => {
-  const editor = document.querySelector('.ql-editor')
-  if (!editor) return
-
-  editor.addEventListener('mouseover', (e) => {
-    const img = e.target.closest('img')
-    if (img) {
-      img.style.cursor = 'move'
-      img.setAttribute('contenteditable', 'true')
-      img.setAttribute('draggable', 'true')
+const fetchContent = async () => {
+  try {
+    const res = await supportApi.fetchSupportList()
+    console.log('Support content response:', res) // 添加调试日志
+    if (res.data && res.data.length > 0) {
+      const supportData = res.data[0]
+      content.value = supportData.content || ''
+      editingContent.value = supportData.content || ''
+      supportId = supportData.id
       
-      // 添加拖拽事件
-      img.addEventListener('mousedown', (e) => {
-        if (e.target === img) {
-          const startX = e.clientX
-          const startY = e.clientY
-          const startWidth = img.offsetWidth
-          const startHeight = img.offsetHeight
-          
-          const handleMouseMove = (e) => {
-            const deltaX = e.clientX - startX
-            const deltaY = e.clientY - startY
-            img.style.width = `${startWidth + deltaX}px`
-            img.style.height = `${startHeight + deltaY}px`
+      // 设置编辑器内容
+      nextTick(() => {
+        const editor = editorRef.value
+        if (editor) {
+          editor.setHtml(content.value)
+          if (!isEditing.value) {
+            editor.disable()
           }
-          
-          const handleMouseUp = () => {
-            document.removeEventListener('mousemove', handleMouseMove)
-            document.removeEventListener('mouseup', handleMouseUp)
+        }
+      })
+    } else {
+      // 如果没有内容，创建一个初始内容
+      content.value = '<p>欢迎使用技术支持</p>'
+      editingContent.value = content.value
+      const res = await supportApi.addSupport({ 
+        content: content.value, 
+        title: '技术支持' 
+      })
+      if (res.data) {
+        supportId = res.data.id
+      }
+      nextTick(() => {
+        const editor = editorRef.value
+        if (editor) {
+          editor.setHtml(content.value)
+          if (!isEditing.value) {
+            editor.disable()
           }
-          
-          document.addEventListener('mousemove', handleMouseMove)
-          document.addEventListener('mouseup', handleMouseUp)
         }
       })
     }
-  })
-}
-
-onMounted(async () => {
-  await fetchContent()
-  // 初始化图片拖拽功能
-  initImageResize()
-})
-
-const fetchContent = async () => {
-  loading.value = true
-  try {
-    // 假设只取第一条技术支持内容
-    const res = await supportApi.fetchSupportList()
-    if (res.data && res.data.length > 0) {
-      // 处理内容中的图片URL
-      const processedContent = res.data[0].content.replace(
-        /<img src="([^"]+)"/g,
-        (match, src) => {
-          const processedUrl = processImageUrl(src)
-          console.log('处理图片URL:', src, '->', processedUrl)
-          return `<img src="${processedUrl}"`
-        }
-      )
-      console.log('处理后的内容:', processedContent)
-      content.value = processedContent
-      editingContent.value = processedContent
-      supportId.value = res.data[0].id
-    }
   } catch (error) {
+    console.error('获取内容失败:', error) // 添加错误日志
     ElMessage.error('获取内容失败')
-  } finally {
-    loading.value = false
+    // 设置默认内容
+    content.value = '<p>欢迎使用技术支持</p>'
+    editingContent.value = content.value
+    nextTick(() => {
+      const editor = editorRef.value
+      if (editor) {
+        editor.setHtml(content.value)
+        if (!isEditing.value) {
+          editor.disable()
+        }
+      }
+    })
   }
 }
 
 const saveContent = async () => {
-  loading.value = true
   try {
-    // 处理内容中的图片
-    const processedContent = await processContentImages(editingContent.value)
-    console.log('保存的内容:', processedContent)
-    
-    if (supportId.value) {
+    if (supportId) {
       await supportApi.updateSupport({ 
-        id: supportId.value, 
-        content: processedContent 
+        id: supportId, 
+        content: editingContent.value,
+        title: '技术支持'
       })
     } else {
-      await supportApi.addSupport({ 
-        content: processedContent, 
+      const res = await supportApi.addSupport({ 
+        content: editingContent.value, 
         title: '技术支持' 
       })
+      if (res.data) {
+        supportId = res.data.id
+      }
     }
-    content.value = processedContent
-    isEditing.value = false
+    content.value = editingContent.value
+    toggleEdit() // 保存后切换到禁用状态
     ElMessage.success('保存成功')
     await fetchContent()
   } catch (error) {
+    console.error('保存失败:', error) // 添加错误日志
     ElMessage.error('保存失败')
-  } finally {
-    loading.value = false
   }
 }
+
+onMounted(() => {
+  fetchContent()
+})
+
+// 组件销毁时，销毁编辑器
+onBeforeUnmount(() => {
+  const editor = editorRef.value
+  if (editor) {
+    editor.destroy()
+  }
+})
 </script>
 
 <style scoped>
-:deep(.ql-container) {
-  height: calc(100% - 42px);
-  font-size: 16px;
+.content-area {
+  margin-top: 20px;
 }
 
-:deep(.ql-editor) {
+:deep(.el-button) {
+  margin-right: 8px;
+}
+
+:deep(.ProseMirror) {
   min-height: 300px;
+  outline: none;
   height: 100%;
 }
 
-:deep(.ql-toolbar) {
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-}
-
-:deep(.ql-container) {
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-}
-
-/* 图片样式 */
-:deep(.ql-editor img) {
+:deep(.ProseMirror img) {
   max-width: 100%;
   height: auto;
-  max-height: 500px;
-  display: block;
-  margin: 10px auto;
+  margin: 10px 0;
 }
 
-/* 图片调整工具栏样式 */
-:deep(.image-resizer) {
-  border: 1px solid #409EFF;
-  background-color: rgba(64, 158, 255, 0.1);
+:deep(.ProseMirror table) {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 10px 0;
 }
 
-:deep(.image-resizer .resize-handle) {
-  background-color: #409EFF;
-  border: 1px solid #fff;
-}
-
-:deep(.image-resizer .toolbar) {
-  background-color: #fff;
+:deep(.ProseMirror table td),
+:deep(.ProseMirror table th) {
   border: 1px solid #dcdfe6;
-  border-radius: 4px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  min-width: 100px;
+}
+
+:deep(.ProseMirror table th) {
+  background-color: #f5f7fa;
+  font-weight: bold;
+}
+
+:deep(.ProseMirror table tr:hover) {
+  background-color: #f5f7fa;
+}
+
+:deep(.ProseMirror .image-resizer) {
+  display: none;
+}
+
+:deep(.ProseMirror .image-resizer .resize-handle) {
+  display: none;
+}
+
+.hidden {
+  display: none;
 }
 </style>

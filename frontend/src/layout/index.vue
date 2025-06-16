@@ -24,7 +24,7 @@
                 type="primary" 
                 size="small" 
                 class="new-article-btn"
-                @click="handleNewArticle"
+                @click.stop="handleNewArticle"
               >
                 <el-icon class="mr-1"><Plus /></el-icon>
                 新增文章
@@ -65,7 +65,7 @@
       <div class="content-body">
         <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">
-            <component :is="Component" />
+            <component :is="Component" ref="manualViewRef" />
           </transition>
         </router-view>
       </div>
@@ -84,7 +84,7 @@ const router = useRouter()
 const route = useRoute()
 const store = useManualStore()
 const articles = ref([])
-const dialogVisible = ref(false)
+const manualViewRef = ref(null)
 
 // 监听路由变化，当路由变化时刷新文章列表
 watch(
@@ -98,19 +98,7 @@ watch(
 
 onMounted(async () => {
   await fetchArticles()
-  if (route.query.action === 'new') {
-    showNewArticleDialog()
-  }
 })
-
-watch(
-  () => route.query.action,
-  (action) => {
-    if (action === 'new') {
-      showNewArticleDialog()
-    }
-  }
-)
 
 const fetchArticles = async () => {
   try {
@@ -122,13 +110,9 @@ const fetchArticles = async () => {
 }
 
 const handleNewArticle = () => {
-  store.setShowNewArticleDialog(true)
-}
-
-function showNewArticleDialog() {
-  newArticle.value = { title: '', content: '' }
-  dialogVisible.value = true
-  drawerVisible.value = false
+  if (manualViewRef.value && manualViewRef.value.showNewArticleDialog) {
+    manualViewRef.value.showNewArticleDialog()
+  }
 }
 
 const getMenuTitle = () => {
