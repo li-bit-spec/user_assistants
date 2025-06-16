@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "quill-image-resize-vue": "^1.0.4"
+  }
+}
