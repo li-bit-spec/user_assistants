@@ -2,11 +2,11 @@ package com.module.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.module.service.UserFeedbackService;
-import com.module.mapper.UserFeedbackMapper;
-import com.module.mapper.FeedbackImageMapper;
-import com.module.entity.UserFeedback;
-import com.module.entity.FeedbackImage;
+import com.module.entity.AssFeedbackImage;
+import com.module.entity.AssUserFeedback;
+import com.module.mapper.AssFeedbackImageMapper;
+import com.module.service.AssUserFeedbackService;
+import com.module.mapper.AssUserFeedbackMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,20 +18,20 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class UserFeedbackServiceImpl implements UserFeedbackService {
+public class AssUserFeedbackServiceImpl implements AssUserFeedbackService {
     @Autowired
-    private UserFeedbackMapper userFeedbackMapper;
+    private AssUserFeedbackMapper assUserFeedbackMapper;
     
     @Autowired
-    private FeedbackImageMapper feedbackImageDao;
+    private AssFeedbackImageMapper feedbackImageDao;
 
     @Override
     public Map<String, Object> pageList(int pageNum, int pageSize) {
-        Page<UserFeedback> page = new Page<>(pageNum, pageSize);
-        QueryWrapper<UserFeedback> wrapper = new QueryWrapper<>();
+        Page<AssUserFeedback> page = new Page<>(pageNum, pageSize);
+        QueryWrapper<AssUserFeedback> wrapper = new QueryWrapper<>();
         wrapper.select("id", "content", "created_at", "updated_at")
               .orderByDesc("created_at");
-        Page<UserFeedback> result = userFeedbackMapper.selectPage(page, wrapper);
+        Page<AssUserFeedback> result = assUserFeedbackMapper.selectPage(page, wrapper);
         
         log.info("查询到反馈总数：{}", result.getTotal());
         
@@ -44,10 +44,10 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
             feedbackMap.put("updatedAt", feedback.getUpdatedAt());
             
             // 查询关联的图片
-            QueryWrapper<FeedbackImage> imageWrapper = new QueryWrapper<>();
+            QueryWrapper<AssFeedbackImage> imageWrapper = new QueryWrapper<>();
             imageWrapper.eq("feedback_id", feedback.getId());
-            List<FeedbackImage> images = feedbackImageDao.selectList(imageWrapper);
-            List<String> imageUrls = images.stream().map(FeedbackImage::getImageUrl).collect(Collectors.toList());
+            List<AssFeedbackImage> images = feedbackImageDao.selectList(imageWrapper);
+            List<String> imageUrls = images.stream().map(AssFeedbackImage::getImageUrl).collect(Collectors.toList());
             feedbackMap.put("imageUrls", imageUrls);
             
             log.info("反馈ID：{}，内容：{}，图片数量：{}", feedback.getId(), feedback.getContent(), imageUrls.size());
@@ -70,15 +70,15 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
             imageUrls != null ? imageUrls.size() : 0);
             
         // 保存反馈内容
-        UserFeedback feedback = new UserFeedback();
+        AssUserFeedback feedback = new AssUserFeedback();
         feedback.setContent(content);
-        userFeedbackMapper.insert(feedback);
+        assUserFeedbackMapper.insert(feedback);
         log.info("反馈保存成功，ID：{}", feedback.getId());
         
         // 保存图片
         if (imageUrls != null && !imageUrls.isEmpty()) {
             for (String imageUrl : imageUrls) {
-                FeedbackImage image = new FeedbackImage();
+                AssFeedbackImage image = new AssFeedbackImage();
                 image.setFeedbackId(feedback.getId());
                 image.setImageUrl(imageUrl);
                 feedbackImageDao.insert(image);
@@ -91,11 +91,11 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
     @Transactional
     public void deleteFeedback(Long id) {
         // 删除关联的图片
-        QueryWrapper<FeedbackImage> imageWrapper = new QueryWrapper<>();
+        QueryWrapper<AssFeedbackImage> imageWrapper = new QueryWrapper<>();
         imageWrapper.eq("feedback_id", id);
         feedbackImageDao.delete(imageWrapper);
         
         // 删除反馈
-        userFeedbackMapper.deleteById(id);
+        assUserFeedbackMapper.deleteById(id);
     }
 }

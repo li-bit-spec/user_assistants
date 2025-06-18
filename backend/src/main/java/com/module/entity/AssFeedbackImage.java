@@ -8,8 +8,8 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@TableName("feedback_images")
-public class FeedbackImage {
+@TableName("ass_feedback_images")
+public class AssFeedbackImage {
     @TableId(type = IdType.AUTO)
     private Long id;
     

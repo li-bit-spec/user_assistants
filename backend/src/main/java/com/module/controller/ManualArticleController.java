@@ -1,7 +1,7 @@
 package com.module.controller;
 
-import com.module.entity.ManualArticle;
-import com.module.service.ManualArticleService;
+import com.module.entity.AssManualArticle;
+import com.module.service.AssManualArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,14 +16,14 @@ import java.util.Map;
 @RequestMapping("/api/manual")
 public class ManualArticleController {
     @Autowired
-    private ManualArticleService manualArticleService;
+    private AssManualArticleService assManualArticleService;
 
     @PostMapping("/page")
     public Map<String, Object> pageList(
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(required = false) String title) {
-        Map<String, Object> result = manualArticleService.pageList(pageNum, pageSize, title);
+        Map<String, Object> result = assManualArticleService.pageList(pageNum, pageSize, title);
         Map<String, Object> response = new HashMap<>();
         response.put("code", 0);
         response.put("message", "success");
@@ -33,7 +33,7 @@ public class ManualArticleController {
 
     @GetMapping("/list")
     public Map<String, Object> listAll() {
-        List<ManualArticle> list = manualArticleService.listAll();
+        List<AssManualArticle> list = assManualArticleService.listAll();
         Map<String, Object> response = new HashMap<>();
         response.put("code", 0);
         response.put("message", "success");
@@ -43,7 +43,7 @@ public class ManualArticleController {
 
     @GetMapping("/{id}")
     public Map<String, Object> getById(@PathVariable Long id) {
-        ManualArticle article = manualArticleService.getById(id);
+        AssManualArticle article = assManualArticleService.getById(id);
         Map<String, Object> response = new HashMap<>();
         response.put("code", 0);
         response.put("message", "success");
@@ -52,8 +52,8 @@ public class ManualArticleController {
     }
 
     @PostMapping("/add")
-    public Map<String, Object> add(@RequestBody ManualArticle article) {
-        manualArticleService.addArticle(article);
+    public Map<String, Object> add(@RequestBody AssManualArticle article) {
+        assManualArticleService.addArticle(article);
         Map<String, Object> response = new HashMap<>();
         response.put("code", 0);
         response.put("message", "success");
@@ -62,8 +62,8 @@ public class ManualArticleController {
     }
 
     @PostMapping("/update")
-    public Map<String, Object> update(@RequestBody ManualArticle article) {
-        manualArticleService.updateArticle(article);
+    public Map<String, Object> update(@RequestBody AssManualArticle article) {
+        assManualArticleService.updateArticle(article);
         Map<String, Object> response = new HashMap<>();
         response.put("code", 0);
         response.put("message", "success");
@@ -73,7 +73,7 @@ public class ManualArticleController {
 
     @DeleteMapping("/{id}")
     public Map<String, Object> delete(@PathVariable Long id) {
-        manualArticleService.deleteArticle(id);
+        assManualArticleService.deleteArticle(id);
         Map<String, Object> response = new HashMap<>();
         response.put("code", 0);
         response.put("message", "success");

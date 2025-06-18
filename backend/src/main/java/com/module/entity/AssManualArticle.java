@@ -5,10 +5,11 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@TableName("user_feedbacks")
-public class UserFeedback {
+@TableName("ass_manual_articles")
+public class AssManualArticle {
     @TableId(type = IdType.AUTO)
     private Long id;
+    private String title;
     private String content;
     @TableField("created_at")
     private Date createdAt;

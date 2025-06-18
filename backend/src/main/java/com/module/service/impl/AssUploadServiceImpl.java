@@ -1,6 +1,6 @@
 package com.module.service.impl;
 
-import com.module.service.UploadService;
+import com.module.service.AssUploadService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-public class UploadServiceImpl implements UploadService {
+public class AssUploadServiceImpl implements AssUploadService {
 
     @Value("${upload.path}")
     private String uploadPath;

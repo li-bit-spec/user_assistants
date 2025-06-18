@@ -1,6 +1,6 @@
 package com.module.controller;
 
-import com.module.service.UserFeedbackService;
+import com.module.service.AssUserFeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +17,13 @@ import java.util.Map;
 @RequestMapping("/api/feedback")
 public class UserFeedbackController {
     @Autowired
-    private UserFeedbackService userFeedbackService;
+    private AssUserFeedbackService assUserFeedbackService;
 
     @PostMapping("/page")
     public Map<String, Object> pageList(
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize) {
-        Map<String, Object> result = userFeedbackService.pageList(pageNum, pageSize);
+        Map<String, Object> result = assUserFeedbackService.pageList(pageNum, pageSize);
         Map<String, Object> response = new HashMap<>();
         response.put("code", 0);
         response.put("message", "success");
@@ -41,7 +41,7 @@ public class UserFeedbackController {
             log.info("接收到反馈提交请求，内容：{}", content);
             log.info("图片数量：{}", imageUrls != null ? imageUrls.size() : 0);
             
-            userFeedbackService.addFeedback(content, imageUrls);
+            assUserFeedbackService.addFeedback(content, imageUrls);
             response.put("code", 0);
             response.put("message", "success");
             response.put("data", null);
@@ -56,7 +56,7 @@ public class UserFeedbackController {
 
     @DeleteMapping("/{id}")
     public Map<String, Object> delete(@PathVariable Long id) {
-        userFeedbackService.deleteFeedback(id);
+        assUserFeedbackService.deleteFeedback(id);
         Map<String, Object> response = new HashMap<>();
         response.put("code", 0);
         response.put("message", "success");

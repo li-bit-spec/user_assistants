@@ -1,6 +1,6 @@
 package com.module.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.module.entity.SupportArticle;
+import com.module.entity.AssSupportArticle;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -13,5 +13,5 @@ import org.apache.ibatis.annotations.Mapper;
  * @author 李华宪
  */
 @Mapper
-public interface SupportArticleMapper extends BaseMapper<SupportArticle> {
+public interface AssSupportArticleMapper extends BaseMapper<AssSupportArticle> {
 }

@@ -1,6 +1,6 @@
 package com.module.controller;
 
-import com.module.service.UploadService;
+import com.module.service.AssUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,14 +21,14 @@ import java.util.Map;
 public class UploadController {
     
     @Autowired
-    private UploadService uploadService;
+    private AssUploadService assUploadService;
     
     @PostMapping("/upload")
     public Map<String, Object> uploadFile(@RequestParam("file") MultipartFile file) {
         log.info("接收到文件上传请求，文件名：{}", file.getOriginalFilename());
         Map<String, Object> response = new HashMap<>();
         try {
-            String url = uploadService.uploadFile(file);
+            String url = assUploadService.uploadFile(file);
             log.info("文件上传成功，URL：{}", url);
             response.put("code", 0);
             response.put("message", "success");

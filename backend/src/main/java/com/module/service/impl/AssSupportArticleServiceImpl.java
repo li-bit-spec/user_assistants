@@ -2,9 +2,9 @@ package com.module.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.module.entity.ManualArticle;
-import com.module.service.ManualArticleService;
-import com.module.mapper.ManualArticleMapper;
+import com.module.entity.AssSupportArticle;
+import com.module.mapper.AssSupportArticleMapper;
+import com.module.service.AssSupportArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.HashMap;
@@ -15,19 +15,19 @@ import java.util.Map;
  * @author 李华宪
  */
 @Service
-public class ManualArticleServiceImpl implements ManualArticleService {
+public class AssSupportArticleServiceImpl implements AssSupportArticleService {
     @Autowired
-    private ManualArticleMapper manualArticleMapper;
+    private AssSupportArticleMapper assSupportArticleMapper;
 
     @Override
     public Map<String, Object> pageList(int pageNum, int pageSize, String title) {
-        Page<ManualArticle> page = new Page<>(pageNum, pageSize);
-        QueryWrapper<ManualArticle> wrapper = new QueryWrapper<>();
+        Page<AssSupportArticle> page = new Page<>(pageNum, pageSize);
+        QueryWrapper<AssSupportArticle> wrapper = new QueryWrapper<>();
         if (title != null && !title.isEmpty()) {
             wrapper.like("title", title);
         }
         wrapper.orderByDesc("created_at");
-        Page<ManualArticle> result = manualArticleMapper.selectPage(page, wrapper);
+        Page<AssSupportArticle> result = assSupportArticleMapper.selectPage(page, wrapper);
         
         Map<String, Object> pageResult = new HashMap<>();
         pageResult.put("list", result.getRecords());
@@ -38,27 +38,27 @@ public class ManualArticleServiceImpl implements ManualArticleService {
     }
 
     @Override
-    public List<ManualArticle> listAll() {
-        return manualArticleMapper.selectList(new QueryWrapper<ManualArticle>().orderByDesc("created_at"));
+    public List<AssSupportArticle> listAll() {
+        return assSupportArticleMapper.selectList(new QueryWrapper<AssSupportArticle>().orderByDesc("created_at"));
     }
 
     @Override
-    public ManualArticle getById(Long id) {
-        return manualArticleMapper.selectById(id);
+    public AssSupportArticle getById(Long id) {
+        return assSupportArticleMapper.selectById(id);
     }
 
     @Override
-    public void addArticle(ManualArticle article) {
-        manualArticleMapper.insert(article);
+    public void addArticle(AssSupportArticle article) {
+        assSupportArticleMapper.insert(article);
     }
 
     @Override
-    public void updateArticle(ManualArticle article) {
-        manualArticleMapper.updateById(article);
+    public void updateArticle(AssSupportArticle article) {
+        assSupportArticleMapper.updateById(article);
     }
 
     @Override
     public void deleteArticle(Long id) {
-        manualArticleMapper.deleteById(id);
+        assSupportArticleMapper.deleteById(id);
     }
 }

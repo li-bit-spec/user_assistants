@@ -5,8 +5,8 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@TableName("support_articles")
-public class SupportArticle {
+@TableName("ass_support_articles")
+public class AssSupportArticle {
     @TableId(type = IdType.AUTO)
     private Long id;
     private String title;
