@@ -1,6 +1,6 @@
-package com.kjz.admin.module.service.impl;
+package com.module.service.impl;
 
-import com.kjz.admin.module.service.UploadService;
+import com.module.service.UploadService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

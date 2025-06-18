@@ -1,15 +1,14 @@
-package com.kjz.admin.module.entity;
+package com.module.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import java.util.Date;
 
 @Data
-@TableName("manual_articles")
-public class ManualArticle {
+@TableName("user_feedbacks")
+public class UserFeedback {
     @TableId(type = IdType.AUTO)
     private Long id;
-    private String title;
     private String content;
     @TableField("created_at")
     private Date createdAt;

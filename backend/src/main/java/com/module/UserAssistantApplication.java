@@ -1,4 +1,4 @@
-package com.kjz.admin;
+package com.module;
 
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
@@ -6,16 +6,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * B端启动类
- *
- * @author zhangcheng
+ * 用户助手后端启动类
  */
 @Slf4j
-@SpringBootApplication(scanBasePackages = "com.kjz")
-@MapperScan("com.kjz.admin.module.dao")
-public class AdminApplication {
+@SpringBootApplication(scanBasePackages = "com.module")
+@MapperScan("com.module.mapper")
+public class UserAssistantApplication {
     public static void main(String[] args) {
-        SpringApplication.run(AdminApplication.class, args);
+        SpringApplication.run(UserAssistantApplication.class, args);
         log.info("用户助手admin服务启动成功。。。。。。");
     }
-}
+} 

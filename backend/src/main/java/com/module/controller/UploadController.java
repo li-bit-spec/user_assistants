@@ -1,6 +1,6 @@
-package com.kjz.admin.module.controller;
+package com.module.controller;
 
-import com.kjz.admin.module.service.UploadService;
+import com.module.service.UploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,4 +41,4 @@ public class UploadController {
         }
         return response;
     }
-} 
+}

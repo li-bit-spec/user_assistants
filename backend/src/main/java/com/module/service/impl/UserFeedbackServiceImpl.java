@@ -1,12 +1,12 @@
-package com.kjz.admin.module.service.impl;
+package com.module.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.kjz.admin.module.service.UserFeedbackService;
-import com.kjz.admin.module.dao.UserFeedbackDao;
-import com.kjz.admin.module.dao.FeedbackImageDao;
-import com.kjz.admin.module.entity.UserFeedback;
-import com.kjz.admin.module.entity.FeedbackImage;
+import com.module.service.UserFeedbackService;
+import com.module.mapper.UserFeedbackMapper;
+import com.module.mapper.FeedbackImageMapper;
+import com.module.entity.UserFeedback;
+import com.module.entity.FeedbackImage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +20,10 @@ import java.util.stream.Collectors;
 @Service
 public class UserFeedbackServiceImpl implements UserFeedbackService {
     @Autowired
-    private UserFeedbackDao userFeedbackDao;
+    private UserFeedbackMapper userFeedbackMapper;
     
     @Autowired
-    private FeedbackImageDao feedbackImageDao;
+    private FeedbackImageMapper feedbackImageDao;
 
     @Override
     public Map<String, Object> pageList(int pageNum, int pageSize) {
@@ -31,7 +31,7 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
         QueryWrapper<UserFeedback> wrapper = new QueryWrapper<>();
         wrapper.select("id", "content", "created_at", "updated_at")
               .orderByDesc("created_at");
-        Page<UserFeedback> result = userFeedbackDao.selectPage(page, wrapper);
+        Page<UserFeedback> result = userFeedbackMapper.selectPage(page, wrapper);
         
         log.info("查询到反馈总数：{}", result.getTotal());
         
@@ -72,7 +72,7 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
         // 保存反馈内容
         UserFeedback feedback = new UserFeedback();
         feedback.setContent(content);
-        userFeedbackDao.insert(feedback);
+        userFeedbackMapper.insert(feedback);
         log.info("反馈保存成功，ID：{}", feedback.getId());
         
         // 保存图片
@@ -96,6 +96,6 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
         feedbackImageDao.delete(imageWrapper);
         
         // 删除反馈
-        userFeedbackDao.deleteById(id);
+        userFeedbackMapper.deleteById(id);
     }
-} 
+}

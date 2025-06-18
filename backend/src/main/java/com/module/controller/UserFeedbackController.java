@@ -1,6 +1,6 @@
-package com.kjz.admin.module.controller;
+package com.module.controller;
 
-import com.kjz.admin.module.service.UserFeedbackService;
+import com.module.service.UserFeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
@@ -63,4 +63,4 @@ public class UserFeedbackController {
         response.put("data", null);
         return response;
     }
-} 
+}

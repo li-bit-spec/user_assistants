@@ -1,6 +1,6 @@
-package com.kjz.admin.module.service;
+package com.module.service;
 
-import com.kjz.admin.module.entity.ManualArticle;
+import com.module.entity.ManualArticle;
 
 import java.util.List;
 import java.util.Map;

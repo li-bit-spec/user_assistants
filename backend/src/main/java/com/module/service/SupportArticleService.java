@@ -1,10 +1,13 @@
-package com.kjz.admin.module.service;
+package com.module.service;
 
-import com.kjz.admin.module.entity.SupportArticle;
+import com.module.entity.SupportArticle;
 
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author 李华宪
+ */
 public interface SupportArticleService {
     Map<String, Object> pageList(int pageNum, int pageSize, String title);
     List<SupportArticle> listAll();
@@ -12,4 +15,4 @@ public interface SupportArticleService {
     void addArticle(SupportArticle article);
     void updateArticle(SupportArticle article);
     void deleteArticle(Long id);
-} 
+}

@@ -1,12 +1,12 @@
-package com.kjz.admin.module.entity;
+package com.module.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import java.util.Date;
 
 @Data
-@TableName("support_articles")
-public class SupportArticle {
+@TableName("manual_articles")
+public class ManualArticle {
     @TableId(type = IdType.AUTO)
     private Long id;
     private String title;
