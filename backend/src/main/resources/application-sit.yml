@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    username: kjz_peds #用户名
+    password: iA1^cE5%cL #密码
+    url: jdbc:mysql://39.105.143.94:3366/db_kjz_peds?serverTimezone=GMT%2b8&useUnicode=true&characterEncoding=UTF8&useSSL=false&allowMultiQueries=true
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: fI0#aE2*aH
+logging:
+  level:
+    root: info
