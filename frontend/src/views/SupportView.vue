@@ -1,46 +1,34 @@
 <template>
-  <div class="p-4 bg-white rounded shadow">
-    <div class="flex items-center mb-4">
-      <el-button
-        type="primary"
-        size="small"
-        class="mr-2"
-        @click="toggleEdit"
-      >
-        {{ isEditing ? '取消' : '编辑' }}
-      </el-button>
-      <el-button
-        v-if="isEditing"
-        type="success"
-        size="small"
-        class="mr-2"
-        @click="saveContent"
-      >
-        保存
-      </el-button>
-      <h2 class="text-xl font-bold mr-6">技术支持</h2>
-    </div>
-
+  <div class="support-container">
     <!-- 内容展示/编辑区域 -->
-    <div class="content-area">
-      <div style="border: 1px solid #ccc; margin-top: 10px">
+    <div class="support-content">
+      <!-- 固定的编辑器工具栏（编辑模式下显示） -->
+      <div v-if="isEditing" class="fixed-editor-toolbar">
         <Toolbar
+          :key="'toolbar-' + toolbarKey"
           :editor="editorRef"
           :defaultConfig="toolbarConfig"
           :mode="mode"
-          style="border-bottom: 1px solid #ccc"
-          :class="{ 'hidden': !isEditing }"
+          class="editor-toolbar"
         />
+      </div>
+
+      <div class="editor-wrapper">
         <Editor
           :defaultConfig="editorConfig"
           :mode="mode"
           v-model="editingContent"
-          style="height: 400px; overflow-y: hidden"
           @onCreated="handleCreated"
           @onChange="handleChange"
         />
       </div>
     </div>
+
+    <!-- 文章目录 -->
+    <ArticleOutline 
+      v-if="!isEditing && content"
+      :content="content"
+    />
   </div>
 </template>
 
@@ -51,11 +39,15 @@ import { ElMessage } from 'element-plus'
 import * as supportApi from '@/api/support'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import { uploadFile } from '@/api/upload'
+import ArticleOutline from '@/components/ArticleOutline.vue'
+import { Edit, Check, Close } from '@element-plus/icons-vue'
 
 const isEditing = ref(false)
 const content = ref('')
 const editingContent = ref('')
 const editorRef = shallowRef()
+const loading = ref(false)
+const toolbarKey = ref(0) // 用于强制重新渲染工具栏
 
 // 编辑器配置
 const mode = 'default'
@@ -101,19 +93,75 @@ const handleCreated = (editor) => {
 }
 
 const handleChange = (editor) => {
-  editingContent.value = editor.getHtml()
+  if (isEditing.value) {
+    editingContent.value = editor.getHtml()
+  }
 }
 
-// 切换编辑状态
-const toggleEdit = () => {
-  isEditing.value = !isEditing.value
-  const editor = editorRef.value
-  if (editor) {
-    if (isEditing.value) {
+// 进入编辑模式
+const enterEditMode = () => {
+  if (!isEditing.value) {
+    isEditing.value = true
+    // 进入编辑模式时，强制刷新工具栏
+    toolbarKey.value = Date.now()
+    
+    const editor = editorRef.value
+    if (editor) {
       editor.enable()
-    } else {
-      editor.disable()
+      editingContent.value = content.value
+      nextTick(() => {
+        editor.setHtml(content.value)
+        setTimeout(() => {
+          editor.focus()
+        }, 100)
+      })
     }
+  }
+}
+
+// 退出编辑模式
+const exitEditMode = () => {
+  if (isEditing.value) {
+    isEditing.value = false
+    
+    const editor = editorRef.value
+    if (editor) {
+      editor.disable()
+      editingContent.value = content.value
+      nextTick(() => {
+        editor.setHtml(content.value)
+      })
+    }
+  }
+}
+
+// 新的操作函数
+const handleEdit = () => {
+  enterEditMode()
+}
+
+const handleSave = async () => {
+  try {
+    await saveContent()
+  } catch (error) {
+    console.error('保存失败:', error)
+  }
+}
+
+const handleCancel = () => {
+  if (isEditing.value) {
+    // 恢复原始内容，丢弃未保存的修改
+    editingContent.value = content.value
+    exitEditMode()
+  }
+}
+
+// 切换编辑状态（保持向后兼容）
+const toggleEdit = () => {
+  if (isEditing.value) {
+    handleCancel()
+  } else {
+    enterEditMode()
   }
 }
 
@@ -177,6 +225,7 @@ const fetchContent = async () => {
 }
 
 const saveContent = async () => {
+  loading.value = true
   try {
     if (supportId) {
       await supportApi.updateSupport({ 
@@ -194,12 +243,16 @@ const saveContent = async () => {
       }
     }
     content.value = editingContent.value
-    toggleEdit() // 保存后切换到禁用状态
+    exitEditMode() // 保存后切换到查看状态
     ElMessage.success('保存成功')
     await fetchContent()
+    return true
   } catch (error) {
     console.error('保存失败:', error) // 添加错误日志
     ElMessage.error('保存失败')
+    throw error
+  } finally {
+    loading.value = false
   }
 }
 
@@ -214,21 +267,95 @@ onBeforeUnmount(() => {
     editor.destroy()
   }
 })
+
+// 导出方法供父组件调用
+defineExpose({
+  handleEdit,
+  handleSave,
+  handleCancel
+})
 </script>
 
 <style scoped>
-.content-area {
-  margin-top: 20px;
+.support-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  background-color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
 }
 
-:deep(.el-button) {
-  margin-right: 8px;
+.support-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  padding: 50px;
+  padding-right: 300px; /* 为目录留出空间 */
+  min-height: calc(100% - 60px);
+  position: relative;
+}
+
+/* 当编辑模式下，为固定工具栏留出空间 */
+.support-content:has(.fixed-editor-toolbar) {
+  padding-top: 150px;
+}
+
+.editor-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border: none;
+  min-height: 500px;
+  height: calc(100vh - 220px);
+  overflow: visible;
+}
+
+:deep(.w-e-text-container) {
+  flex: 1;
+  overflow-y: visible;
+  height: 100% !important;
+  min-height: 400px !important;
+  border: none !important;
+}
+
+:deep(.w-e-scroll) {
+  height: 100% !important;
+  min-height: 400px !important;
+  overflow: visible !important;
 }
 
 :deep(.ProseMirror) {
-  min-height: 300px;
+  height: 100% !important;
+  min-height: 400px !important;
+  padding: 16px;
+  box-sizing: border-box;
+  overflow: visible;
   outline: none;
-  height: 100%;
+
+  &[contenteditable="false"] {
+    background-color: transparent;
+    cursor: default;
+    user-select: text;
+  }
+
+  /* 标题高亮效果 */
+  h1, h2, h3, h4, h5, h6 {
+    scroll-margin-top: 80px;
+    transition: background-color 0.3s;
+
+    &.heading-highlight {
+      background-color: #fff3cd !important;
+      border-radius: 4px;
+      padding: 4px 8px;
+      margin: -4px -8px;
+    }
+  }
 }
 
 :deep(.ProseMirror img) {
@@ -267,7 +394,33 @@ onBeforeUnmount(() => {
   display: none;
 }
 
-.hidden {
-  display: none;
+/* 固定编辑器工具栏样式 */
+.fixed-editor-toolbar {
+  position: fixed;
+  top: 43px; /* 紧贴顶部导航栏 */
+  left: 20px; /* content-body padding 24px + support-content padding 16px */
+  right: 324px; /* content-body padding 24px + support-content padding-right 300px */
+  z-index: 40;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border: 1px solid #e4e7ed;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 16px 0;
+}
+
+.editor-toolbar {
+  border: none !important;
+  background-color: transparent !important;
+  padding: 8px 16px;
+}
+
+/* 移除所有编辑器边框 */
+:deep(.w-e-toolbar) {
+  border: none !important;
+}
+
+:deep(.w-e-text-container),
+:deep(.w-e-scroll) {
+  border: none !important;
 }
 </style>

@@ -1,33 +1,24 @@
 <template>
-  <div class="p-4 bg-white rounded shadow">
-    <div class="flex items-center mb-4">
-      
-      <el-button
-        type="primary"
-        size="small"
-        class="mr-2"
-        @click="toggleEdit"
-      >
-        {{ isEditing ? '取消' : '编辑' }}
-      </el-button>
-      <el-button
-        v-if="isEditing"
-        type="success"
-        size="small"
-        class="mr-2"
-        @click="saveContent"
-      >
-        保存
-      </el-button>
-      <el-button
-        type="danger"
-        size="small"
-        @click="handleDelete"
-        :disabled="!currentArticle?.id"
-      >
-        删除
-      </el-button>
-      <h2 class="text-xl font-bold mr-6">{{ currentArticle?.title || '文章内容' }}</h2>
+  <div class="manual-container">
+    <div class="manual-header">
+      <template v-if="isEditing">
+        <el-button
+          type="info"
+          size="small"
+          class="mr-2"
+          @click="toggleEdit"
+        >
+          取消
+        </el-button>
+        <el-button
+          type="success"
+          size="small"
+          class="mr-2"
+          @click="saveContent"
+        >
+          保存
+        </el-button>
+      </template>
     </div>
 
     <!-- 文章列表抽屉 -->
@@ -124,31 +115,139 @@
     </el-dialog>
 
     <!-- 内容展示/编辑区域 -->
-    <div class="content-area">
-      <el-input
-        v-if="isEditing"
-        v-model="currentArticle.title"
-        placeholder="请输入标题"
-        class="mb-4"
-      />
-      <div style="border: 1px solid #ccc; margin-top: 10px">
-        <Toolbar
-          :editor="editorRef"
-          :defaultConfig="toolbarConfig"
-          :mode="mode"
-          style="border-bottom: 1px solid #ccc"
-          :class="{ 'hidden': !isEditing }"
+    <div class="manual-content">
+      <!-- 顶部固定工具栏（编辑模式下始终显示） -->
+      <div v-if="currentArticle.id" class="article-toolbar">
+        <div class="toolbar-container">
+          <!-- 编辑器工具栏（编辑模式） -->
+          <div v-if="isEditing" class="editor-toolbar-section">
+            <Toolbar
+              :key="'toolbar-' + toolbarKey"
+              :editor="editorRef"
+              :defaultConfig="toolbarConfig"
+              :mode="mode"
+              class="inline-editor-toolbar"
+            />
+          </div>
+          
+          <!-- 操作按钮 -->
+          <div class="toolbar-actions">
+            <template v-if="!isEditing">
+              <!-- 查看模式操作按钮 -->
+              <el-button 
+                type="primary" 
+                :icon="Edit" 
+                @click="handleEdit"
+                class="action-btn"
+              >
+                编辑
+              </el-button>
+              <el-button 
+                type="danger" 
+                :icon="Delete" 
+                @click="handleDelete"
+                class="action-btn"
+                plain
+              >
+                删除
+              </el-button>
+            </template>
+            <template v-else>
+              <!-- 编辑模式操作按钮 -->
+              <el-button 
+                type="success" 
+                :icon="Check" 
+                @click="handleSave"
+                :loading="loading"
+                class="action-btn"
+              >
+                保存
+              </el-button>
+              <el-button 
+                :icon="Close" 
+                @click="handleCancel"
+                class="action-btn"
+                plain
+              >
+                取消
+              </el-button>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- 文章标题区域（移到工具栏下方） -->
+      <div v-if="currentArticle.id" class="article-title-section">
+        <el-input
+          v-if="isEditing"
+          v-model="currentArticle.title"
+          placeholder="请输入标题"
+          class="title-input"
+          size="large"
         />
+        <h1 v-else class="article-title">{{ currentArticle.title }}</h1>
+      </div>
+
+      <div class="editor-wrapper">
         <Editor
           :defaultConfig="editorConfig"
           :mode="mode"
           v-model="editingContent"
-          style="height: 400px; overflow-y: hidden"
           @onCreated="handleCreated"
           @onChange="handleChange"
         />
       </div>
     </div>
+
+    <!-- 文章目录 -->
+    <ArticleOutline 
+      v-if="!isEditing && currentArticle.content"
+      :content="currentArticle.content"
+    />
+
+    <!-- 浮动操作按钮（备选方案，当前已注释） -->
+    <!-- 
+    <div v-if="currentArticle.id" class="floating-actions">
+      <el-button-group v-if="!isEditing" class="floating-group">
+        <el-button 
+          type="primary" 
+          :icon="Edit" 
+          @click="handleEdit"
+          class="floating-btn"
+          circle
+          size="large"
+        />
+        <el-button 
+          type="danger" 
+          :icon="Delete" 
+          @click="handleDelete"
+          class="floating-btn"
+          circle
+          size="large"
+        />
+      </el-button-group>
+      
+      <el-button-group v-else class="floating-group">
+        <el-button 
+          type="success" 
+          :icon="Check" 
+          @click="handleSave"
+          :loading="loading"
+          class="floating-btn"
+          circle
+          size="large"
+        />
+        <el-button 
+          type="info" 
+          :icon="Close" 
+          @click="handleCancel"
+          class="floating-btn"
+          circle
+          size="large"
+        />
+      </el-button-group>
+    </div>
+    -->
   </div>
 </template>
 
@@ -161,11 +260,15 @@ import * as manualApi from '@/api/manual'
 import { useManualStore } from '@/store'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import { uploadFile } from '@/api/upload'
+import ArticleOutline from '@/components/ArticleOutline.vue'
+import { Edit, Delete, Check, Close } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()
 const store = useManualStore()
 const isEditing = ref(false)
+const toolbarKey = ref(0) // 用于强制重新渲染工具栏
+
 const drawerVisible = ref(false)
 const dialogVisible = ref(false)
 const loading = ref(false)
@@ -175,9 +278,10 @@ const newArticle = ref({ title: '', content: '' })
 const deleteDialogVisible = ref(false)
 const editingContent = ref('')
 
+
 // 编辑器实例，必须用 shallowRef
 const editorRef = shallowRef()
-const dialogEditorRef = shallowRef() // 新增对话框编辑器实例
+const dialogEditorRef = shallowRef()
 
 // 编辑器配置
 const mode = 'default'
@@ -210,13 +314,16 @@ const editorConfig = {
 
 // 编辑器回调函数
 const handleCreated = (editor) => {
-  editorRef.value = editor // 记录 editor 实例
+  editorRef.value = editor
   if (!isEditing.value) {
     editor.disable()
   }
+  // 设置初始内容
+  nextTick(() => {
+    editor.setHtml(currentArticle.value.content)
+  })
 }
 
-// 对话框编辑器回调函数
 const handleDialogEditorCreated = (editor) => {
   dialogEditorRef.value = editor
 }
@@ -228,21 +335,42 @@ const handleDialogEditorChange = (editor) => {
 const handleChange = (editor) => {
   if (isEditing.value) {
     editingContent.value = editor.getHtml()
-  } else {
-    newArticle.value.content = editor.getHtml()
   }
 }
 
-// 切换编辑状态
-const toggleEdit = () => {
-  isEditing.value = !isEditing.value
-  const editor = editorRef.value
-  if (editor) {
-    if (isEditing.value) {
+
+
+// 进入编辑模式
+const enterEditMode = () => {
+  if (!isEditing.value) {
+    isEditing.value = true
+    // 进入编辑模式时，强制刷新工具栏（使用时间戳确保唯一性）
+    toolbarKey.value = Date.now()
+    
+    const editor = editorRef.value
+    if (editor) {
+      // 进入编辑模式
       editor.enable()
-    } else {
-      editor.disable()
+      editingContent.value = currentArticle.value.content
+      nextTick(() => {
+        editor.setHtml(currentArticle.value.content)
+        // 确保工具栏能正确关联到编辑器
+        setTimeout(() => {
+          editor.focus()
+        }, 100)
+      })
     }
+  }
+}
+
+// 保持向后兼容的toggleEdit函数
+const toggleEdit = () => {
+  if (isEditing.value) {
+    // 如果正在编辑，则退出编辑模式（取消编辑）
+    handleCancel()
+  } else {
+    // 如果不在编辑，则进入编辑模式
+    enterEditMode()
   }
 }
 
@@ -250,7 +378,7 @@ const toggleEdit = () => {
 const saveContent = async () => {
   if (!currentArticle.value.title) {
     ElMessage.warning('请输入标题')
-    return
+    throw new Error('标题不能为空')
   }
   loading.value = true
   try {
@@ -259,14 +387,40 @@ const saveContent = async () => {
       content: editingContent.value
     })
     currentArticle.value.content = editingContent.value
-    toggleEdit() // 保存后切换到禁用状态
     ElMessage.success('保存成功')
+    
+    // 保存成功后退出编辑模式
+    exitEditMode()
+    
     await fetchArticles()
+    return true
   } catch (error) {
     ElMessage.error('保存失败')
+    throw error
   } finally {
     loading.value = false
   }
+}
+
+// 显示新增文章对话框
+const showNewArticleDialog = () => {
+  newArticle.value = { title: '', content: '' }
+  dialogVisible.value = true
+  drawerVisible.value = false
+  nextTick(() => {
+    if (dialogEditorRef.value) {
+      dialogEditorRef.value.setHtml('')
+    }
+  })
+}
+
+// 处理删除操作
+const handleDelete = () => {
+  if (!currentArticle.value?.id) {
+    ElMessage.warning('请先选择要删除的文章')
+    return
+  }
+  deleteDialogVisible.value = true
 }
 
 // 组件销毁时，销毁编辑器
@@ -287,7 +441,6 @@ const fetchArticles = async () => {
     const res = await manualApi.fetchManualList()
     articles.value = res.data || []
     
-    // 如果当前路由有id参数，优先加载该文章
     if (route.params.id) {
       const article = articles.value.find(a => a.id.toString() === route.params.id)
       if (article) {
@@ -339,9 +492,7 @@ const fetchArticleById = async (id) => {
       const editor = editorRef.value
       if (editor) {
         editor.setHtml(res.data.content)
-        if (!isEditing.value) {
-          editor.disable()
-        }
+        editor.disable() // 确保获取文章后处于查看模式
       }
     })
   } catch (error) {
@@ -351,10 +502,14 @@ const fetchArticleById = async (id) => {
   }
 }
 
-// 监听路由参数id变化，自动加载对应文章
+// 监听路由参数id变化
 watch(
   () => route.params.id,
   (newId) => {
+    // 路由变化时重置编辑状态和工具栏
+    isEditing.value = false
+    toolbarKey.value++
+    
     if (newId) {
       fetchArticleById(newId)
     } else if (articles.value.length > 0) {
@@ -364,9 +519,7 @@ watch(
         const editor = editorRef.value
         if (editor) {
           editor.setHtml(currentArticle.value.content)
-          if (!isEditing.value) {
-            editor.disable()
-          }
+          editor.disable() // 确保新文章加载时处于查看模式
         }
       })
     }
@@ -382,30 +535,6 @@ watch(
     }
   }
 )
-
-const showNewArticleDialog = () => {
-  newArticle.value = { title: '', content: '' }
-  dialogVisible.value = true
-  drawerVisible.value = false
-  nextTick(() => {
-    if (dialogEditorRef.value) {
-      dialogEditorRef.value.setHtml('')
-    }
-  })
-}
-
-const closeNewArticleDialog = () => {
-  dialogVisible.value = false
-  store.setShowNewArticleDialog(false)
-  if (dialogEditorRef.value) {
-    dialogEditorRef.value.setHtml('')
-  }
-}
-
-const handleArticleSelect = async (id) => {
-  router.push(`/manual/${id}`)
-  drawerVisible.value = false
-}
 
 onMounted(() => {
   fetchArticles()
@@ -443,14 +572,6 @@ const createArticle = async () => {
   } finally {
     loading.value = false
   }
-}
-
-const handleDelete = () => {
-  if (!currentArticle.value?.id) {
-    ElMessage.warning('请先选择要删除的文章')
-    return
-  }
-  deleteDialogVisible.value = true
 }
 
 const confirmDelete = async () => {
@@ -496,12 +617,164 @@ watch(
   { immediate: true }
 )
 
+const handleArticleSelect = async (id) => {
+  router.push(`/manual/${id}`)
+  drawerVisible.value = false
+}
+
+const closeNewArticleDialog = () => {
+  dialogVisible.value = false
+  store.setShowNewArticleDialog(false)
+  if (dialogEditorRef.value) {
+    dialogEditorRef.value.setHtml('')
+  }
+}
+
+
+
+// 新的操作函数
+const handleEdit = () => {
+  // 直接进入编辑模式
+  enterEditMode()
+}
+
+const handleSave = async () => {
+  try {
+    await saveContent()
+  } catch (error) {
+    console.error('保存失败:', error)
+  }
+}
+
+const exitEditMode = () => {
+  if (isEditing.value) {
+    isEditing.value = false
+    
+    const editor = editorRef.value
+    if (editor) {
+      editor.disable()
+      editingContent.value = currentArticle.value.content
+      nextTick(() => {
+        editor.setHtml(currentArticle.value.content)
+      })
+    }
+  }
+}
+
+const handleCancel = () => {
+  // 取消编辑，直接退出编辑模式
+  if (isEditing.value) {
+    // 恢复原始内容，丢弃未保存的修改
+    editingContent.value = currentArticle.value.content
+    exitEditMode()
+  }
+}
+
+// 组件方法导出
 defineExpose({
-  showNewArticleDialog
+  showNewArticleDialog,
+  toggleEdit,
+  handleDelete,
+  saveContent
 })
 </script>
 
 <style scoped>
+.manual-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  background-color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+}
+
+.manual-header {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  min-height: 60px;
+}
+
+.manual-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  padding: 0 16px 16px;
+  padding-right: 300px; /* 为目录留出空间 */
+  min-height: calc(100% - 60px);
+  position: relative;
+}
+
+/* 当工具栏存在时，为内容区域添加顶部填充 */
+.manual-content:has(.article-toolbar) {
+  padding-top: 70px; /* 为固定工具栏留出空间，与工具栏高度匹配 */
+}
+
+.editor-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+  border-left: none;
+  border-top: none;
+  min-height: 500px; /* 设置最小高度确保编辑器高度足够 */
+  height: calc(100vh - 220px); /* 减去导航栏、工具栏等高度 */
+  overflow: visible;
+}
+
+:deep(.w-e-text-container) {
+  flex: 1;
+  overflow-y: visible;
+  height: 100% !important;
+  min-height: 400px !important; /* 确保最小高度满足编辑器要求 */
+  border-left: none !important;
+}
+
+:deep(.w-e-scroll) {
+  height: 100% !important;
+  min-height: 400px !important; /* 确保最小高度满足编辑器要求 */
+  overflow: visible !important;
+}
+
+:deep(.ProseMirror) {
+  height: 100% !important;
+  min-height: 400px !important; /* 确保最小高度满足编辑器要求 */
+  padding: 16px;
+  box-sizing: border-box;
+  overflow: visible;
+
+  &[contenteditable="false"] {
+    background-color: transparent;
+    cursor: default;
+    user-select: text;
+  }
+
+  /* 标题高亮效果 */
+  h1, h2, h3, h4, h5, h6 {
+    scroll-margin-top: 80px;
+    transition: background-color 0.3s;
+
+    &.heading-highlight {
+      background-color: #fff3cd !important;
+      border-radius: 4px;
+      padding: 4px 8px;
+      margin: -4px -8px;
+    }
+  }
+}
+
+/* 非编辑状态下隐藏工具栏相关的边框 */
+.editor-wrapper:not(:has(.w-e-toolbar)) {
+  border-top: none;
+  border-left: none;
+}
+
 :deep(.el-drawer__body) {
   padding: 0;
 }
@@ -523,12 +796,6 @@ defineExpose({
   flex: 1;
   padding: 16px;
   overflow-y: auto;
-}
-
-:deep(.ProseMirror) {
-  min-height: 300px;
-  outline: none;
-  height: 100%;
 }
 
 :deep(.ProseMirror img) {
@@ -682,5 +949,137 @@ defineExpose({
 
 :deep(.el-input) {
   width: 100%;
+}
+
+.article-toolbar {
+  position: fixed;
+  top: 60px; /* 导航栏60px + 10px间距，紧贴导航栏 */
+  left: 25px; /* content-body padding 24px + manual-content padding 16px */
+  right: 324px; /* content-body padding 24px + manual-content padding-right 300px */
+  z-index: 50;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-bottom: 2px solid #e9ecef;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.toolbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.editor-toolbar-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.article-title-section {
+  padding: 16px 24px;
+  margin-bottom: 16px;
+}
+
+
+
+.article-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #2c3e50;
+  line-height: 1.4;
+}
+
+.title-input {
+  flex: 1;
+  max-width: 600px;
+}
+
+:deep(.title-input .el-input__wrapper) {
+  box-shadow: 0 0 0 1px #409eff;
+  border-radius: 8px;
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.action-btn {
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 10px 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.action-btn.el-button--primary {
+  background: linear-gradient(135deg, #409eff 0%, #3a8ee6 100%);
+  border: none;
+}
+
+.action-btn.el-button--success {
+  background: linear-gradient(135deg, #67c23a 0%, #5daf34 100%);
+  border: none;
+}
+
+.action-btn.el-button--danger {
+  color: #f56c6c;
+  border-color: #f56c6c;
+}
+
+.action-btn.el-button--danger:hover {
+  background-color: #f56c6c;
+  color: white;
+}
+
+/* 内联编辑器工具栏样式 */
+.inline-editor-toolbar {
+  border: 1px solid #e4e7ed !important;
+  border-radius: 6px;
+  background-color: #ffffff;
+  padding: 4px 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+
+/* 浮动操作按钮样式（备选方案） */
+.floating-actions {
+  position: fixed;
+  bottom: 80px;
+  right: 40px;
+  z-index: 200;
+}
+
+.floating-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 50px;
+  background: white;
+  padding: 8px;
+}
+
+.floating-btn {
+  width: 56px !important;
+  height: 56px !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.floating-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 </style>

@@ -13,7 +13,7 @@ backend/
 │       │           ├── service/     # 服务层
 │       │           ├── mapper/      # MyBatis Mapper接口
 │       │           ├── entity/      # 实体类
-│       │           └── AdminApplication.java  # 启动类
+│       │           └── UserAssistantApplication.java  # 启动类
 │       └── resources/              # 配置文件目录
 │           ├── application*.yml    # 各环境配置文件
 │           └── logback-spring.xml  # 日志配置

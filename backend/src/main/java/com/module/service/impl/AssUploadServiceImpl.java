@@ -62,7 +62,7 @@ public class AssUploadServiceImpl implements AssUploadService {
             }
             
             // 返回文件URL
-            String fileUrl = "/api/uploads/" + filename;
+            String fileUrl = "/uploads/" + filename;
             log.info("返回文件URL：{}", fileUrl);
             return fileUrl;
         } catch (Exception e) {

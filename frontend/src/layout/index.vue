@@ -1,7 +1,13 @@
 <template>
   <div class="layout-container">
-    <!-- 左侧导航栏 -->
-    <div class="sidebar">
+    <!-- Drawer导航栏 -->
+    <el-drawer
+      v-model="isDrawerOpen"
+      direction="ltr"
+      size="300px"
+      :with-header="false"
+      class="sidebar-drawer"
+    >
       <!-- Logo和标题 -->
       <div class="sidebar-header">
         <el-icon class="mr-2 text-primary-600"><Monitor /></el-icon>
@@ -19,17 +25,6 @@
               <el-icon><Document /></el-icon>
               <span>使用手册</span>
             </template>
-            <el-menu-item class="menu-item-button">
-              <el-button 
-                type="primary" 
-                size="small" 
-                class="new-article-btn"
-                @click.stop="handleNewArticle"
-              >
-                <el-icon class="mr-1"><Plus /></el-icon>
-                新增文章
-              </el-button>
-            </el-menu-item>
             <el-menu-item
               v-for="article in articles"
               :key="article.id"
@@ -50,16 +45,76 @@
           </el-menu-item>
         </el-menu>
       </div>
-    </div>
+    </el-drawer>
 
     <!-- 右侧内容区域 -->
     <div class="main-content">
       <!-- 顶部导航栏 -->
       <div class="content-header">
+        <!-- 添加菜单切换按钮 -->
+        <el-button
+          type="text"
+          class="toggle-btn"
+          @click="toggleDrawer"
+        >
+          <el-icon :size="20">
+            <Fold v-if="isDrawerOpen" />
+            <Expand v-else />
+          </el-icon>
+        </el-button>
         <el-breadcrumb>
           <el-breadcrumb-item>首页</el-breadcrumb-item>
           <el-breadcrumb-item>{{ getMenuTitle() }}</el-breadcrumb-item>
         </el-breadcrumb>
+        <!-- 右侧操作按钮 -->
+        <div class="header-actions">
+          <!-- 新增文章按钮 -->
+          <el-button 
+            v-if="$route.path.startsWith('/manual')"
+            type="primary" 
+            :icon="Plus"
+            @click="handleNewArticle"
+            class="action-btn"
+            size="small"
+          >
+            新增文章
+          </el-button>
+          
+          <!-- 技术支持编辑按钮 -->
+          <template v-if="$route.path === '/support'">
+            <el-button 
+              v-if="!supportEditingState"
+              type="primary" 
+              :icon="Edit"
+              @click="handleSupportEdit"
+              class="action-btn"
+              size="small"
+            >
+              编辑
+            </el-button>
+            <template v-else>
+              <el-button 
+                type="success" 
+                :icon="Check"
+                @click="handleSupportSave"
+                :loading="supportSaving"
+                class="action-btn"
+                size="small"
+              >
+                保存
+              </el-button>
+              <el-button 
+                :icon="Close"
+                @click="handleSupportCancel"
+                class="action-btn"
+                size="small"
+                plain
+              >
+                取消
+              </el-button>
+            </template>
+          </template>
+        </div>
       </div>
       <!-- 内容区域 -->
       <div class="content-body">
@@ -76,7 +131,7 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { Document, ChatLineRound, Service, Monitor, Plus } from '@element-plus/icons-vue'
+import { Document, ChatLineRound, Service, Monitor, Plus, ArrowDown, Delete, Fold, Expand, Edit, Close, Check } from '@element-plus/icons-vue'
 import { useManualStore } from '@/store'
 import { ElMessage } from 'element-plus'
 
@@ -85,13 +140,21 @@ const route = useRoute()
 const store = useManualStore()
 const articles = ref([])
 const manualViewRef = ref(null)
+const isDrawerOpen = ref(false)
+const supportEditingState = ref(false)
+const supportSaving = ref(false)
 
 // 监听路由变化，当路由变化时刷新文章列表
 watch(
   () => route.path,
-  async () => {
-    if (route.path.startsWith('/manual')) {
+  async (newPath) => {
+    if (newPath.startsWith('/manual')) {
       await fetchArticles()
+    }
+    // 路由变化时重置技术支持编辑状态
+    if (newPath !== '/support') {
+      supportEditingState.value = false
+      supportSaving.value = false
     }
   }
 )
@@ -110,10 +173,41 @@ const fetchArticles = async () => {
 }
 
 const handleNewArticle = () => {
-  if (manualViewRef.value && manualViewRef.value.showNewArticleDialog) {
+  if (manualViewRef.value) {
     manualViewRef.value.showNewArticleDialog()
   }
 }
+
+// 技术支持编辑相关方法
+const handleSupportEdit = () => {
+  supportEditingState.value = true
+  if (manualViewRef.value && manualViewRef.value.handleEdit) {
+    manualViewRef.value.handleEdit()
+  }
+}
+
+const handleSupportSave = async () => {
+  supportSaving.value = true
+  try {
+    if (manualViewRef.value && manualViewRef.value.handleSave) {
+      await manualViewRef.value.handleSave()
+      supportEditingState.value = false
+    }
+  } catch (error) {
+    console.error('保存失败:', error)
+  } finally {
+    supportSaving.value = false
+  }
+}
+
+const handleSupportCancel = () => {
+  supportEditingState.value = false
+  if (manualViewRef.value && manualViewRef.value.handleCancel) {
+    manualViewRef.value.handleCancel()
+  }
+}
+
+
 
 const getMenuTitle = () => {
   const path = route.path
@@ -121,6 +215,10 @@ const getMenuTitle = () => {
   if (path === '/feedback') return '用户反馈'
   if (path === '/support') return '技术支持'
   return ''
+}
+
+const toggleDrawer = () => {
+  isDrawerOpen.value = !isDrawerOpen.value
 }
 </script>
 
@@ -132,17 +230,13 @@ const getMenuTitle = () => {
   background-color: #f5f5f5;
 }
 
-.sidebar {
-  width: 300px;
-  background-color: white;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  height: 100vh;
-  left: 0;
-  top: 0;
-  z-index: 1000;
+.sidebar-drawer {
+  :deep(.el-drawer__body) {
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .sidebar-header {
@@ -168,7 +262,6 @@ const getMenuTitle = () => {
 
 .main-content {
   flex: 1;
-  margin-left: 300px;
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -190,15 +283,36 @@ const getMenuTitle = () => {
   overflow-y: auto;
 }
 
-.menu-item-button {
-  padding: 8px 16px;
-}
-
-.new-article-btn {
-  width: 100%;
+.toggle-btn {
+  margin-right: 16px;
+  padding: 0;
+  height: 32px;
+  width: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  &:hover {
+    background-color: #f5f7fa;
+  }
+}
+
+.header-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.action-btn {
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(64, 158, 255, 0.3);
 }
 
 .article-item {

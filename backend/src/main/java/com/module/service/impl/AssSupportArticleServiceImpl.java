@@ -54,7 +54,11 @@ public class AssSupportArticleServiceImpl implements AssSupportArticleService {
 
     @Override
     public void updateArticle(AssSupportArticle article) {
-        assSupportArticleMapper.updateById(article);
+        // 只更新内容字段
+        AssSupportArticle updateArticle = new AssSupportArticle();
+        updateArticle.setId(article.getId());
+        updateArticle.setContent(article.getContent());
+        assSupportArticleMapper.updateById(updateArticle);
     }
 
     @Override

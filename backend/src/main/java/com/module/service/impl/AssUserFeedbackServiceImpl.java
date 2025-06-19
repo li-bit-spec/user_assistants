@@ -27,13 +27,17 @@ public class AssUserFeedbackServiceImpl implements AssUserFeedbackService {
 
     @Override
     public Map<String, Object> pageList(int pageNum, int pageSize) {
+        log.info("开始分页查询反馈列表，页码：{}，每页大小：{}", pageNum, pageSize);
+        
         Page<AssUserFeedback> page = new Page<>(pageNum, pageSize);
         QueryWrapper<AssUserFeedback> wrapper = new QueryWrapper<>();
-        wrapper.select("id", "content", "created_at", "updated_at")
-              .orderByDesc("created_at");
+        // 移除select限制，使用完整的实体查询以确保total计算正确
+        wrapper.orderByDesc("created_at");
+        
         Page<AssUserFeedback> result = assUserFeedbackMapper.selectPage(page, wrapper);
         
-        log.info("查询到反馈总数：{}", result.getTotal());
+        log.info("分页查询结果 - 总数：{}，当前页：{}，每页大小：{}，实际记录数：{}", 
+            result.getTotal(), result.getCurrent(), result.getSize(), result.getRecords().size());
         
         // 为每个反馈添加图片信息
         List<Map<String, Object>> feedbackList = result.getRecords().stream().map(feedback -> {
@@ -50,7 +54,10 @@ public class AssUserFeedbackServiceImpl implements AssUserFeedbackService {
             List<String> imageUrls = images.stream().map(AssFeedbackImage::getImageUrl).collect(Collectors.toList());
             feedbackMap.put("imageUrls", imageUrls);
             
-            log.info("反馈ID：{}，内容：{}，图片数量：{}", feedback.getId(), feedback.getContent(), imageUrls.size());
+            log.debug("处理反馈 - ID：{}，内容长度：{}，图片数量：{}", 
+                feedback.getId(), 
+                feedback.getContent() != null ? feedback.getContent().length() : 0, 
+                imageUrls.size());
             return feedbackMap;
         }).collect(Collectors.toList());
         
@@ -60,6 +67,7 @@ public class AssUserFeedbackServiceImpl implements AssUserFeedbackService {
         pageResult.put("pageNum", (int) result.getCurrent());
         pageResult.put("pageSize", (int) result.getSize());
         
+        log.info("返回分页结果 - 列表大小：{}，总数：{}", feedbackList.size(), result.getTotal());
         return pageResult;
     }
 

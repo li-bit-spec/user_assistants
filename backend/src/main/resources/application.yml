@@ -27,9 +27,17 @@ spring:
       web-stat-filter-exclusions: '*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*,/download/*,/wj/*,/assets/*'
       mapper:
         notEmpty: true
-      mybatis:
-        configuration:
-          map-underscore-to-camel-case: true
+
+# MyBatis-Plus配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
   redis:
     redisson:
       enable: true

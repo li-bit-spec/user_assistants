@@ -20,14 +20,35 @@ public class UserFeedbackController {
     private AssUserFeedbackService assUserFeedbackService;
 
     @PostMapping("/page")
-    public Map<String, Object> pageList(
-            @RequestParam(defaultValue = "1") int pageNum,
-            @RequestParam(defaultValue = "10") int pageSize) {
+    public Map<String, Object> pageList(@RequestBody Map<String, Object> pageRequest) {
+        // 从请求体中获取分页参数，并设置默认值
+        // 处理数据类型转换，前端可能传递Number类型
+        int pageNum = 1;
+        int pageSize = 10;
+        
+        if (pageRequest.get("pageNum") != null) {
+            Object pageNumObj = pageRequest.get("pageNum");
+            pageNum = pageNumObj instanceof Number ? 
+                ((Number) pageNumObj).intValue() : 
+                Integer.parseInt(pageNumObj.toString());
+        }
+        
+        if (pageRequest.get("pageSize") != null) {
+            Object pageSizeObj = pageRequest.get("pageSize");
+            pageSize = pageSizeObj instanceof Number ? 
+                ((Number) pageSizeObj).intValue() : 
+                Integer.parseInt(pageSizeObj.toString());
+        }
+        
+        log.info("接收到分页请求，页码：{}，每页大小：{}", pageNum, pageSize);
+        
         Map<String, Object> result = assUserFeedbackService.pageList(pageNum, pageSize);
         Map<String, Object> response = new HashMap<>();
         response.put("code", 0);
         response.put("message", "success");
         response.put("data", result);
+        
+        log.info("返回分页结果，总数：{}", result.get("total"));
         return response;
     }
 

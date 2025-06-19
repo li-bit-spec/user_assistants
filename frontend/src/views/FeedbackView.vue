@@ -1,70 +1,130 @@
 <template>
-  <div class="p-4 bg-white rounded shadow">
-    <!-- 顶部反馈输入区域 -->
-    <div class="mb-4 pb-4 border-b border-gray-200">
+  <div class="feedback-container">
+    <!-- 上部分：反馈输入区域 -->
+    <div class="feedback-input-container">
       <el-input
         v-model="feedbackContent"
         type="textarea"
         :rows="4"
         placeholder="请输入反馈内容"
-        class="mb-4"
+        class="w-full mb-4"
       />
       
-      <div class="flex items-center">
-        <el-upload
-          v-model:file-list="uploadFileList"
-          class="mr-4"
-          action="/api/upload"
-          list-type="picture-card"
-          :on-success="handleUploadSuccess"
-          :on-error="handleUploadError"
-          :before-upload="beforeUpload"
-          :limit="10"
-          accept="image/jpeg,image/png"
-        >
-          <el-icon><Plus /></el-icon>
-        </el-upload>
+      <div class="feedback-images-container">
+        <!-- 已上传图片预览 -->
+        <div class="image-preview-list" v-if="uploadFileList.length">
+          <div v-for="(file, index) in uploadFileList" :key="index" class="image-preview-item">
+            <el-image
+              :src="file.url"
+              fit="cover"
+              class="preview-image"
+            >
+              <template #error>
+                <div class="image-error">
+                  <el-icon><Picture /></el-icon>
+                </div>
+              </template>
+            </el-image>
+            <el-icon class="delete-icon" @click="handleRemoveImage(file)"><Close /></el-icon>
+          </div>
+        </div>
 
-        <el-button type="primary" @click="submitFeedback">提交反馈</el-button>
+        <div class="upload-actions">
+          <el-upload
+            v-model:file-list="uploadFileList"
+            class="image-uploader"
+            action="/api/upload"
+            :show-file-list="false"
+            :on-success="handleUploadSuccess"
+            :on-error="handleUploadError"
+            :before-upload="beforeUpload"
+            :limit="10"
+            accept="image/jpeg,image/png"
+          >
+            <el-button type="primary" plain>
+              <el-icon class="mr-2"><Plus /></el-icon>上传图片
+            </el-button>
+          </el-upload>
+          
+          <el-button type="primary" @click="submitFeedback">提交反馈</el-button>
+        </div>
       </div>
     </div>
 
-    <!-- 底部反馈列表 -->
-    <el-table :data="feedbackList" style="width: 100%" v-loading="loading">
-      <el-table-column prop="content" label="内容" show-overflow-tooltip />
-      <el-table-column prop="created_at" label="时间" width="180">
-        <template #default="{ row }">
-          {{ formatDate(row.created_at) }}
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="150" fixed="right">
-        <template #default="{ row }">
-          <el-button
-            type="primary"
-            size="small"
-            @click="handleView(row)"
-          >
-            详情
-          </el-button>
-          <el-button
-            type="danger"
-            size="small"
-            @click="handleDelete(row)"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <!-- 下部分：反馈列表 -->
+    <div class="feedback-list-container">
+      <el-table 
+        :data="feedbackList" 
+        style="width: 100%" 
+        v-loading="loading"
+        :cell-style="{ padding: '16px' }"
+        :header-cell-style="{ 
+          background: '#f5f7fa',
+          color: '#606266',
+          fontWeight: 'bold',
+          borderRight: '1px solid #ebeef5',
+          padding: '12px 16px'
+        }"
+        border
+      >
+        <el-table-column prop="content" label="反馈内容" min-width="300">
+          <template #default="{ row }">
+            <div class="feedback-content">
+              <div class="content-text">{{ row.content }}</div>
+              <div class="image-list" v-if="row.imageUrls && row.imageUrls.length">
+                <el-image
+                  v-for="(url, index) in processImageUrls(row.imageUrls)"
+                  :key="index"
+                  :src="url"
+                  :preview-src-list="processImageUrls(row.imageUrls)"
+                  :initial-index="index"
+                  fit="cover"
+                  class="feedback-image"
+                  :preview-teleported="true"
+                  @click="() => viewImage(processImageUrls(row.imageUrls), index)"
+                >
+                  <template #error>
+                    <div class="image-error">
+                      <el-icon><Picture /></el-icon>
+                    </div>
+                  </template>
+                </el-image>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+        
+        <el-table-column prop="createdAt" label="反馈时间" width="180" align="center">
+          <template #default="{ row }">
+            <span class="feedback-time">{{ formatDate(row.createdAt) }}</span>
+          </template>
+        </el-table-column>
+        
+        <el-table-column label="操作" width="120" align="center" fixed="right">
+          <template #default="{ row }">
+            <el-button
+              type="danger"
+              size="small"
+              @click="handleDelete(row)"
+            >
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
 
-    <!-- 分页 -->
-    <div class="mt-4 flex justify-end">
-      <el-pagination
-        v-model:current-page="currentPage"
-        v-model:page-size="pageSize"
-        :total="total"
-        @current-change="handlePageChange"
-      />
+      <!-- 分页 -->
+      <div class="pagination-container">
+        <el-pagination
+          v-model:current-page="currentPage"
+          v-model:page-size="pageSize"
+          :total="total"
+          :page-sizes="[5, 10, 20, 50]"
+          layout="total, sizes, prev, pager, next, jumper"
+          @current-change="handlePageChange"
+          @size-change="handlePageSizeChange"
+        />
+      </div>
     </div>
 
     <!-- 删除确认对话框 -->
@@ -129,9 +189,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { Plus, Picture } from '@element-plus/icons-vue'
+import { Plus, Picture, Close } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import * as feedbackApi from '@/api/feedback'
+import { ElImageViewer } from 'element-plus'
 
 const feedbackContent = ref('')
 const feedbackImages = ref([])
@@ -152,15 +213,20 @@ onMounted(() => {
 
 const formatDate = (dateStr) => {
   if (!dateStr) return ''
-  const date = new Date(dateStr)
-  return date.toLocaleString('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-  })
+  try {
+    const date = new Date(dateStr)
+    if (isNaN(date.getTime())) return ''
+    return date.toLocaleString('zh-CN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).replace(/\//g, '-')
+  } catch (e) {
+    console.error('日期格式化错误:', e)
+    return ''
+  }
 }
 
 const fetchFeedbackList = async () => {
@@ -197,21 +263,35 @@ const beforeUpload = (file) => {
     ElMessage.error('图片大小不能超过 2MB!')
     return false
   }
+  if (uploadFileList.value.length >= 10) {
+    ElMessage.error('最多只能上传10张图片!')
+    return false
+  }
   return true
 }
 
 const handleUploadSuccess = (response) => {
-  if (response.code === 0 && response.data && response.data.code === 0) {
+  if (response.code === 0) {
     console.log('图片上传成功，完整响应：', response)
-    feedbackImages.value.push(response.data.data)
+    const imageUrl = response.data
+    if (!feedbackImages.value.includes(imageUrl) && feedbackImages.value.length < 10) {
+      feedbackImages.value.push(imageUrl)
+      uploadFileList.value = feedbackImages.value.map(url => ({
+        url,
+        name: url.split('/').pop()
+      }))
+      ElMessage.success('上传成功')
+    } else {
+      ElMessage.warning('已达到最大上传数量限制')
+    }
     console.log('当前图片列表：', feedbackImages.value)
-    ElMessage.success('上传成功')
   } else {
     ElMessage.error('上传失败')
   }
 }
 
-const handleUploadError = () => {
+const handleUploadError = (error) => {
+  console.error('上传失败:', error)
   ElMessage.error('上传失败')
 }
 
@@ -234,6 +314,7 @@ const submitFeedback = async () => {
     feedbackContent.value = ''
     feedbackImages.value = []
     uploadFileList.value = []
+    currentPage.value = 1  // 重置到第一页
     await fetchFeedbackList()
   } catch (error) {
     console.error('提交反馈失败：', error)
@@ -254,6 +335,12 @@ const confirmDelete = async () => {
   try {
     await feedbackApi.deleteFeedback(currentDeleteItem.value.id)
     ElMessage.success('删除成功')
+    
+    // 如果当前页面删除后没有数据了，且不是第一页，则跳转到前一页
+    if (feedbackList.value.length === 1 && currentPage.value > 1) {
+      currentPage.value = currentPage.value - 1
+    }
+    
     await fetchFeedbackList()
   } catch (error) {
     ElMessage.error('删除失败')
@@ -268,15 +355,18 @@ const handlePageChange = async (page) => {
   await fetchFeedbackList()
 }
 
+const handlePageSizeChange = async (size) => {
+  pageSize.value = size
+  currentPage.value = 1  // 重置到第一页
+  await fetchFeedbackList()
+}
+
 const handleView = (row) => {
   console.log('查看详情，行数据：', row)
-  // 处理图片URL，添加基础路径
   if (row.imageUrls && row.imageUrls.length > 0) {
     row.imageUrls = row.imageUrls.map(url => {
-      // 如果URL不是以http开头，添加基础URL
-      if (!url.startsWith('http')) {
-        // 确保URL以/api开头
-        return url.startsWith('/api') ? url : `/api${url}`
+      if (!url.startsWith('http') && !url.startsWith('/uploads')) {
+        return `/uploads${url}`
       }
       return url
     })
@@ -285,9 +375,181 @@ const handleView = (row) => {
   currentDetailItem.value = row
   detailDialogVisible.value = true
 }
+
+const handleRemoveImage = (file) => {
+  const index = uploadFileList.value.indexOf(file)
+  if (index !== -1) {
+    uploadFileList.value.splice(index, 1)
+    feedbackImages.value = feedbackImages.value.filter(url => url !== file.url)
+  }
+}
+
+const handleImageClick = (imageUrls, index) => {
+  // 使用 el-image 组件的预览功能，不需要额外处理
+}
+
+const processImageUrls = (urls) => {
+  if (!urls) return []
+  return urls.map(url => {
+    if (!url.startsWith('http') && !url.startsWith('/uploads/')) {
+      return `/uploads/${url}`
+    }
+    return url
+  })
+}
+
+const viewImage = (urls, index) => {
+  const imgViewer = ElImageViewer({
+    urlList: urls,
+    initialIndex: index,
+    teleported: true,
+    zIndex: 3000,
+    onClose: () => {
+      imgViewer.close()
+    }
+  })
+}
 </script>
 
 <style scoped>
+.feedback-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.feedback-input-container {
+  background-color: #f9fafb;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.feedback-images-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.image-preview-list {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.image-preview-item {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.delete-icon {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 4px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.delete-icon:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.upload-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.feedback-list-container {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.feedback-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.content-text {
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: #303133;
+  line-height: 1.6;
+}
+
+.feedback-time {
+  color: #606266;
+  font-size: 14px;
+}
+
+.image-list {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px 0;
+}
+
+.feedback-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.2s;
+  object-fit: cover;
+}
+
+.feedback-image:hover {
+  transform: scale(1.05);
+}
+
+.image-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: #f3f4f6;
+  color: #9ca3af;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+  padding: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+:deep(.el-upload-list) {
+  display: none;
+}
+
 .feedback-detail-dialog :deep(.el-dialog__body) {
   padding: 0;
 }
@@ -304,27 +566,57 @@ const handleView = (row) => {
   color: #1f2937;
 }
 
-.image-error {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: #909399;
-  font-size: 12px;
+:deep(.el-image-viewer__wrapper) {
+  position: fixed;
+  z-index: 3000;
 }
 
-.image-error .el-icon {
-  font-size: 20px;
-  margin-bottom: 4px;
+:deep(.el-image-viewer__mask) {
+  position: fixed;
 }
 
-.el-image {
-  transition: all 0.2s ease;
+:deep(.el-image-viewer__close) {
+  color: #fff;
 }
 
-.el-image:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+:deep(.el-image-viewer__actions) {
+  z-index: 3001;
+}
+
+:deep(.el-image-viewer__canvas) {
+  z-index: 3001;
+}
+
+:deep(.el-image-viewer__prev, .el-image-viewer__next) {
+  z-index: 3001;
+}
+
+:deep(.el-table) {
+  --el-table-border-color: #ebeef5;
+  --el-table-header-bg-color: #f5f7fa;
+}
+
+:deep(.el-table::before) {
+  display: none;
+}
+
+:deep(.el-table__row) {
+  transition: background-color 0.3s;
+}
+
+:deep(.el-table__row:hover) {
+  background-color: #f5f7fa;
+}
+
+:deep(.el-table td) {
+  border-bottom: 1px solid #ebeef5;
+}
+
+:deep(.el-table .cell) {
+  padding: 0;
+}
+
+:deep(.el-button--small) {
+  padding: 8px 16px;
 }
 </style>
