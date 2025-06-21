@@ -16,5 +16,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // 添加静态资源映射
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:" + uploadPath + "/");
+        
+        // 添加前端静态资源映射
+        registry.addResourceHandler("/**")
+                .addResourceLocations("classpath:/static/")
+                .setCachePeriod(3600);
     }
 } 

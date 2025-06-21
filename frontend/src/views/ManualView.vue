@@ -720,9 +720,7 @@ defineExpose({
   flex: 1;
   display: flex;
   flex-direction: column;
-  border: 1px solid #ccc;
-  border-left: none;
-  border-top: none;
+  border: none;
   min-height: 500px; /* 设置最小高度确保编辑器高度足够 */
   height: calc(100vh - 220px); /* 减去导航栏、工具栏等高度 */
   overflow: visible;
@@ -769,10 +767,14 @@ defineExpose({
   }
 }
 
-/* 非编辑状态下隐藏工具栏相关的边框 */
-.editor-wrapper:not(:has(.w-e-toolbar)) {
-  border-top: none;
-  border-left: none;
+/* 移除所有编辑器边框 */
+:deep(.w-e-toolbar) {
+  border: none !important;
+}
+
+:deep(.w-e-text-container),
+:deep(.w-e-scroll) {
+  border: none !important;
 }
 
 :deep(.el-drawer__body) {

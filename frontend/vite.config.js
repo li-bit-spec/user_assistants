@@ -16,13 +16,13 @@ export default defineConfig({
     open: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:8090',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
         ws: true
       },
       '^/uploads/.*': {
-        target: 'http://localhost:8090',
+        target: 'http://localhost:8080',
         changeOrigin: true
       }
     }

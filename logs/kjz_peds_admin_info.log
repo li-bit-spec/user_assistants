@@ -1,42 +1,49 @@
-2025-06-11 17:26:43 2121 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration' of type [org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration$$EnhancerBySpringCGLIB$$b6292ef1] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2025-06-11 17:26:44 3413 [main] INFO  o.s.c.c.c.ConfigServicePropertySourceLocator - Fetching config from server at : http://localhost:8888
-2025-06-11 17:26:44 3504 [main] INFO  o.s.c.c.c.ConfigServicePropertySourceLocator - Connect Timeout Exception on Url - http://localhost:8888. Will be trying the next url if available
-2025-06-11 17:26:44 3508 [main] INFO  com.kjz.admin.AdminApplication - The following profiles are active: sit
-2025-06-11 17:26:45 4546 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode!
-2025-06-11 17:26:45 4550 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2025-06-11 17:26:45 4577 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 15ms. Found 0 Redis repository interfaces.
-2025-06-11 17:26:46 4935 [main] INFO  o.s.c.context.scope.GenericScope - BeanFactory id=719d5922-36a8-36dd-bde1-864086cb0b38
-2025-06-11 17:26:46 5419 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration' of type [org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration$$EnhancerBySpringCGLIB$$b6292ef1] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2025-06-11 17:26:47 5797 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8090 (http)
-2025-06-11 17:26:47 5808 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2025-06-11 17:26:47 5809 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.31]
-2025-06-11 17:26:47 5930 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2025-06-11 17:26:47 5931 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 2402 ms
-2025-06-11 17:26:47 6039 [main] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
-2025-06-11 17:26:48 6856 [main] INFO  c.a.druid.pool.DruidDataSource - {dataSource-1} inited
-2025-06-11 17:26:48 7480 [main] INFO  c.a.druid.pool.DruidDataSource - {dataSource-1} closed
-2025-06-11 17:26:48 7481 [main] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
-2025-06-11 17:26:48 7496 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLoggingListener - 
-
-Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
-2025-06-11 18:07:47 1982 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration' of type [org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration$$EnhancerBySpringCGLIB$$82797e0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2025-06-11 18:07:48 3298 [main] INFO  o.s.c.c.c.ConfigServicePropertySourceLocator - Fetching config from server at : http://localhost:8888
-2025-06-11 18:07:49 3403 [main] INFO  o.s.c.c.c.ConfigServicePropertySourceLocator - Connect Timeout Exception on Url - http://localhost:8888. Will be trying the next url if available
-2025-06-11 18:07:49 3407 [main] INFO  com.kjz.admin.AdminApplication - The following profiles are active: sit
-2025-06-11 18:07:50 4411 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode!
-2025-06-11 18:07:50 4413 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2025-06-11 18:07:50 4444 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 16ms. Found 0 Redis repository interfaces.
-2025-06-11 18:07:50 4787 [main] INFO  o.s.c.context.scope.GenericScope - BeanFactory id=719d5922-36a8-36dd-bde1-864086cb0b38
-2025-06-11 18:07:50 5206 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration' of type [org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration$$EnhancerBySpringCGLIB$$82797e0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2025-06-11 18:07:51 5562 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8090 (http)
-2025-06-11 18:07:51 5573 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2025-06-11 18:07:51 5573 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.31]
-2025-06-11 18:07:51 5707 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2025-06-11 18:07:51 5708 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 2271 ms
-2025-06-11 18:07:51 5838 [main] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
-2025-06-11 18:07:52 6600 [main] INFO  c.a.druid.pool.DruidDataSource - {dataSource-1} inited
-2025-06-11 18:07:52 7233 [main] INFO  c.a.druid.pool.DruidDataSource - {dataSource-1} closed
-2025-06-11 18:07:52 7234 [main] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
-2025-06-11 18:07:52 7249 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLoggingListener - 
-
-Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2025-06-20 14:46:19 501  [main] INFO  com.module.UserAssistantApplication - Starting UserAssistantApplication on LHX with PID 8604 (F:\cursor_project\user_assistants\backend\target\classes started by 李华宪 in F:\cursor_project\user_assistants)
+2025-06-20 14:46:19 502  [main] INFO  com.module.UserAssistantApplication - The following profiles are active: sit
+2025-06-20 14:46:20 1193 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode!
+2025-06-20 14:46:20 1195 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-06-20 14:46:20 1219 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 10ms. Found 0 Redis repository interfaces.
+2025-06-20 14:46:20 1491 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8090 (http)
+2025-06-20 14:46:20 1496 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-06-20 14:46:20 1496 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.31]
+2025-06-20 14:46:20 1545 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-06-20 14:46:20 1545 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 1018 ms
+2025-06-20 14:46:20 1612 [main] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2025-06-20 14:46:21 1944 [main] INFO  c.a.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-06-20 14:46:21 2508 [main] INFO  o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2025-06-20 14:46:22 2794 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8090 (http) with context path ''
+2025-06-20 14:46:22 2796 [main] INFO  com.module.UserAssistantApplication - Started UserAssistantApplication in 2.69 seconds (JVM running for 3.2)
+2025-06-20 14:46:22 2797 [main] INFO  com.module.UserAssistantApplication - 用户助手admin服务启动成功。。。。。。
+2025-06-20 14:46:47 28753 [http-nio-8090-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-06-20 14:46:47 28753 [http-nio-8090-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-06-20 14:46:47 28763 [http-nio-8090-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 9 ms
+2025-06-20 14:47:08 49417 [http-nio-8090-exec-10] INFO  c.m.c.UserFeedbackController - 接收到分页请求，页码：1，每页大小：10
+2025-06-20 14:47:08 49420 [http-nio-8090-exec-10] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始分页查询反馈列表，页码：1，每页大小：10
+2025-06-20 14:47:08 49452 [http-nio-8090-exec-10] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 分页查询结果 - 总数：12，当前页：1，每页大小：10，实际记录数：10
+2025-06-20 14:47:08 49534 [http-nio-8090-exec-10] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 返回分页结果 - 列表大小：10，总数：12
+2025-06-20 14:47:08 49534 [http-nio-8090-exec-10] INFO  c.m.c.UserFeedbackController - 返回分页结果，总数：12
+2025-06-20 14:47:15 56044 [http-nio-8090-exec-7] INFO  c.m.c.UserFeedbackController - 接收到分页请求，页码：1，每页大小：10
+2025-06-20 14:47:15 56044 [http-nio-8090-exec-7] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始分页查询反馈列表，页码：1，每页大小：10
+2025-06-20 14:47:15 56061 [http-nio-8090-exec-7] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 分页查询结果 - 总数：12，当前页：1，每页大小：10，实际记录数：10
+2025-06-20 14:47:15 56136 [http-nio-8090-exec-7] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 返回分页结果 - 列表大小：10，总数：12
+2025-06-20 14:47:15 56136 [http-nio-8090-exec-7] INFO  c.m.c.UserFeedbackController - 返回分页结果，总数：12
+2025-06-20 14:47:19 60627 [http-nio-8090-exec-3] INFO  c.m.controller.UploadController - 接收到文件上传请求，文件名：微信图片_20250302153415.jpg
+2025-06-20 14:47:19 60628 [http-nio-8090-exec-3] INFO  c.m.s.impl.AssUploadServiceImpl - 开始上传文件，文件名：微信图片_20250302153415.jpg，大小：71618
+2025-06-20 14:47:19 60628 [http-nio-8090-exec-3] INFO  c.m.s.impl.AssUploadServiceImpl - 创建上传目录成功：F:\cursor_project\user_assistants/uploads
+2025-06-20 14:47:19 60628 [http-nio-8090-exec-3] INFO  c.m.s.impl.AssUploadServiceImpl - 生成文件名：3a3c9c0b-6f8b-4588-ab54-8376228ce063.jpg
+2025-06-20 14:47:19 60630 [http-nio-8090-exec-3] INFO  c.m.s.impl.AssUploadServiceImpl - 文件保存成功：F:\cursor_project\user_assistants\uploads\3a3c9c0b-6f8b-4588-ab54-8376228ce063.jpg
+2025-06-20 14:47:19 60630 [http-nio-8090-exec-3] INFO  c.m.s.impl.AssUploadServiceImpl - 返回文件URL：/uploads/3a3c9c0b-6f8b-4588-ab54-8376228ce063.jpg
+2025-06-20 14:47:19 60630 [http-nio-8090-exec-3] INFO  c.m.controller.UploadController - 文件上传成功，URL：/uploads/3a3c9c0b-6f8b-4588-ab54-8376228ce063.jpg
+2025-06-20 14:47:23 64509 [http-nio-8090-exec-9] INFO  c.m.c.UserFeedbackController - 接收到反馈提交请求，内容：qdqd
+2025-06-20 14:47:23 64509 [http-nio-8090-exec-9] INFO  c.m.c.UserFeedbackController - 图片数量：1
+2025-06-20 14:47:23 64519 [http-nio-8090-exec-9] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始保存反馈，内容：qdqd，图片数量：1
+2025-06-20 14:47:23 64522 [http-nio-8090-exec-9] INFO  c.module.config.MyMetaObjectHandler - 开始插入填充...
+2025-06-20 14:47:23 64541 [http-nio-8090-exec-9] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 反馈保存成功，ID：53
+2025-06-20 14:47:23 64555 [http-nio-8090-exec-9] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 图片保存成功，URL：/uploads/3a3c9c0b-6f8b-4588-ab54-8376228ce063.jpg
+2025-06-20 14:47:23 64774 [http-nio-8090-exec-1] INFO  c.m.c.UserFeedbackController - 接收到分页请求，页码：1，每页大小：10
+2025-06-20 14:47:23 64774 [http-nio-8090-exec-1] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始分页查询反馈列表，页码：1，每页大小：10
+2025-06-20 14:47:24 64791 [http-nio-8090-exec-1] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 分页查询结果 - 总数：13，当前页：1，每页大小：10，实际记录数：10
+2025-06-20 14:47:24 64865 [http-nio-8090-exec-1] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 返回分页结果 - 列表大小：10，总数：13
+2025-06-20 14:47:24 64865 [http-nio-8090-exec-1] INFO  c.m.c.UserFeedbackController - 返回分页结果，总数：13
+2025-06-20 14:54:15 476068 [SpringContextShutdownHook] INFO  o.s.s.c.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
+2025-06-20 14:54:15 476069 [SpringContextShutdownHook] INFO  c.a.druid.pool.DruidDataSource - {dataSource-1} closed
