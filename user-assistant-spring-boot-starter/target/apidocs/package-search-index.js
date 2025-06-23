@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"com.module.config"},{"l":"com.module.controller"},{"l":"com.module.entity"},{"l":"com.module.mapper"},{"l":"com.module.service"},{"l":"com.module.service.impl"},{"l":"com.module.starter.annotation"},{"l":"com.module.starter.autoconfigure"},{"l":"com.module.starter.properties"},{"l":"所有程序包","u":"allpackages-index.html"}];updateSearchResults();

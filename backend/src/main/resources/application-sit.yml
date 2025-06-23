@@ -2,7 +2,7 @@ spring:
   datasource:
     username: root #用户名
     password: iA1^cE5%cL #密码
-    url: jdbc:mysql://39.105.143.94:3366/db_assistant?serverTimezone=GMT%2b8&useUnicode=true&characterEncoding=UTF8&useSSL=false&allowMultiQueries=true
+    url: jdbc:mysql://39.105.143.94:3366/db_assistant?serverTimezone=GMT%2b8&useUnicode=true&characterEncoding=utf8mb4&useSSL=false&allowMultiQueries=true
   redis:
     host: 127.0.0.1
     port: 6379

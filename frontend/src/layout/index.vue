@@ -66,19 +66,69 @@
           <el-breadcrumb-item>首页</el-breadcrumb-item>
           <el-breadcrumb-item>{{ getMenuTitle() }}</el-breadcrumb-item>
         </el-breadcrumb>
-        <!-- 右侧操作按钮 -->
+                <!-- 右侧操作按钮 -->
         <div class="header-actions">
-          <!-- 新增文章按钮 -->
-          <el-button 
-            v-if="$route.path.startsWith('/manual')"
-            type="primary" 
-            :icon="Plus"
-            @click="handleNewArticle"
-            class="action-btn"
-            size="small"
-          >
-            新增文章
-          </el-button>
+          <!-- 手册页面按钮 -->
+          <template v-if="$route.path.startsWith('/manual')">
+            <!-- 新增文章按钮 -->
+            <el-button 
+              type="primary" 
+              :icon="Plus"
+              @click="handleNewArticle"
+              class="action-btn"
+              size="small"
+            >
+              新增文章
+            </el-button>
+            
+            <!-- 手册编辑和删除按钮 -->
+            <template v-if="currentManualArticleId">
+              <template v-if="!manualEditingState">
+                <!-- 查看模式操作按钮 -->
+                <el-button 
+                  type="primary" 
+                  :icon="Edit"
+                  @click="handleManualEdit"
+                  class="action-btn"
+                  size="small"
+                >
+                  编辑
+                </el-button>
+                <el-button 
+                  type="danger" 
+                  :icon="Delete"
+                  @click="handleManualDelete"
+                  class="action-btn"
+                  size="small"
+                  plain
+                >
+                  删除
+                </el-button>
+              </template>
+              <template v-else>
+                <!-- 编辑模式操作按钮 -->
+                <el-button 
+                  type="success" 
+                  :icon="Check"
+                  @click="handleManualSave"
+                  :loading="manualSaving"
+                  class="action-btn"
+                  size="small"
+                >
+                  保存
+                </el-button>
+                <el-button 
+                  :icon="Close"
+                  @click="handleManualCancel"
+                  class="action-btn"
+                  size="small"
+                  plain
+                >
+                  取消
+                </el-button>
+              </template>
+            </template>
+          </template>
           
           <!-- 技术支持编辑按钮 -->
           <template v-if="$route.path === '/support'">
@@ -129,7 +179,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { Document, ChatLineRound, Service, Monitor, Plus, ArrowDown, Delete, Fold, Expand, Edit, Close, Check } from '@element-plus/icons-vue'
 import { useManualStore } from '@/store'
@@ -143,6 +193,8 @@ const manualViewRef = ref(null)
 const isDrawerOpen = ref(false)
 const supportEditingState = ref(false)
 const supportSaving = ref(false)
+const manualEditingState = ref(false)
+const manualSaving = ref(false)
 
 // 监听路由变化，当路由变化时刷新文章列表
 watch(
@@ -151,13 +203,25 @@ watch(
     if (newPath.startsWith('/manual')) {
       await fetchArticles()
     }
-    // 路由变化时重置技术支持编辑状态
+    // 路由变化时重置编辑状态
     if (newPath !== '/support') {
       supportEditingState.value = false
       supportSaving.value = false
     }
+    if (!newPath.startsWith('/manual')) {
+      manualEditingState.value = false
+      manualSaving.value = false
+    }
   }
 )
+
+// 当前手册文章ID
+const currentManualArticleId = computed(() => {
+  if (route.path.startsWith('/manual/')) {
+    return route.params.id
+  }
+  return null
+})
 
 onMounted(async () => {
   await fetchArticles()
@@ -189,12 +253,16 @@ const handleSupportEdit = () => {
 const handleSupportSave = async () => {
   supportSaving.value = true
   try {
-    if (manualViewRef.value && manualViewRef.value.handleSave) {
-      await manualViewRef.value.handleSave()
-      supportEditingState.value = false
+    if (manualViewRef.value && manualViewRef.value.saveContent) {
+      const success = await manualViewRef.value.saveContent()
+      if (success) {
+        supportEditingState.value = false
+      }
+      // 如果保存失败，保持编辑状态不变
     }
   } catch (error) {
     console.error('保存失败:', error)
+    // 保存失败时保持编辑状态
   } finally {
     supportSaving.value = false
   }
@@ -204,6 +272,45 @@ const handleSupportCancel = () => {
   supportEditingState.value = false
   if (manualViewRef.value && manualViewRef.value.handleCancel) {
     manualViewRef.value.handleCancel()
+  }
+}
+
+// 手册编辑相关方法
+const handleManualEdit = () => {
+  manualEditingState.value = true
+  if (manualViewRef.value && manualViewRef.value.handleEdit) {
+    manualViewRef.value.handleEdit()
+  }
+}
+
+const handleManualSave = async () => {
+  manualSaving.value = true
+  try {
+    if (manualViewRef.value && manualViewRef.value.saveContent) {
+      const success = await manualViewRef.value.saveContent()
+      if (success) {
+        manualEditingState.value = false
+      }
+      // 如果保存失败，保持编辑状态不变
+    }
+  } catch (error) {
+    console.error('保存失败:', error)
+    // 保存失败时保持编辑状态
+  } finally {
+    manualSaving.value = false
+  }
+}
+
+const handleManualCancel = () => {
+  manualEditingState.value = false
+  if (manualViewRef.value && manualViewRef.value.handleCancel) {
+    manualViewRef.value.handleCancel()
+  }
+}
+
+const handleManualDelete = () => {
+  if (manualViewRef.value && manualViewRef.value.handleDelete) {
+    manualViewRef.value.handleDelete()
   }
 }
 

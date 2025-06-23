@@ -109,7 +109,11 @@ const setHeadingIds = () => {
 // 滚动到指定标题
 const scrollToHeading = (headingId) => {
   const heading = document.getElementById(headingId)
-  const container = document.querySelector('.manual-container')
+  // 尝试多种容器选择器
+  const container = document.querySelector('.manual-container') || 
+                   document.querySelector('.support-container') || 
+                   document.querySelector('.manual-content') ||
+                   document.querySelector('.support-content')
   
   if (!heading || !container) {
     console.warn('未找到标题或滚动容器', { headingId, heading, container })
@@ -140,7 +144,11 @@ const scrollToHeading = (headingId) => {
 
 // 监听滚动更新活跃标题
 const updateActiveHeading = () => {
-  const container = document.querySelector('.manual-container')
+  // 尝试多种容器选择器
+  const container = document.querySelector('.manual-container') || 
+                   document.querySelector('.support-container') || 
+                   document.querySelector('.manual-content') ||
+                   document.querySelector('.support-content')
   if (!container || headings.value.length === 0) return
   
   const containerRect = container.getBoundingClientRect()
@@ -174,11 +182,88 @@ const watchContent = () => {
   }, 100)
 }
 
+// MutationObserver监听编辑器内容变化
+let observer = null
+const startObserving = () => {
+  // 停止之前的观察
+  if (observer) {
+    observer.disconnect()
+  }
+  
+  // 查找编辑器容器
+  const findEditor = () => {
+    return document.querySelector('[contenteditable="true"]') || 
+           document.querySelector('.w-e-text-container') ||
+           document.querySelector('.ProseMirror')
+  }
+  
+  const tryStartObserver = (retryCount = 0) => {
+    const editor = findEditor()
+    if (!editor) {
+      if (retryCount < 10) {
+        setTimeout(() => tryStartObserver(retryCount + 1), 200)
+      }
+      return
+    }
+    
+    // 创建 MutationObserver
+    observer = new MutationObserver((mutations) => {
+      let hasHeadingChanges = false
+      
+      mutations.forEach((mutation) => {
+        // 检查是否有标题相关的变化
+        if (mutation.type === 'childList') {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === Node.ELEMENT_NODE && 
+                /^H[1-6]$/.test(node.tagName)) {
+              hasHeadingChanges = true
+            }
+          })
+          mutation.removedNodes.forEach((node) => {
+            if (node.nodeType === Node.ELEMENT_NODE && 
+                /^H[1-6]$/.test(node.tagName)) {
+              hasHeadingChanges = true
+            }
+          })
+        } else if (mutation.type === 'characterData' && 
+                   mutation.target.parentElement &&
+                   /^H[1-6]$/.test(mutation.target.parentElement.tagName)) {
+          hasHeadingChanges = true
+        }
+      })
+      
+      // 如果有标题变化，延迟更新目录
+      if (hasHeadingChanges) {
+        watchContent()
+      }
+    })
+    
+    // 开始观察
+    observer.observe(editor, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+      characterDataOldValue: true
+    })
+    
+    console.log('开始监听编辑器内容变化')
+  }
+  
+  nextTick(() => {
+    setTimeout(() => tryStartObserver(), 500)
+  })
+}
+
 // 组件挂载
 onMounted(() => {
   setHeadingIds()
+  startObserving() // 开始监听编辑器内容变化
   
-  const container = document.querySelector('.manual-container')
+  // 尝试多种容器选择器
+  const container = document.querySelector('.manual-container') || 
+                   document.querySelector('.support-container') || 
+                   document.querySelector('.manual-content') ||
+                   document.querySelector('.support-content')
   if (container) {
     container.addEventListener('scroll', handleScroll)
   }
@@ -186,7 +271,17 @@ onMounted(() => {
 
 // 组件卸载
 onUnmounted(() => {
-  const container = document.querySelector('.manual-container')
+  // 停止 MutationObserver
+  if (observer) {
+    observer.disconnect()
+    observer = null
+  }
+  
+  // 尝试多种容器选择器
+  const container = document.querySelector('.manual-container') || 
+                   document.querySelector('.support-container') || 
+                   document.querySelector('.manual-content') ||
+                   document.querySelector('.support-content')
   if (container) {
     container.removeEventListener('scroll', handleScroll)
   }
@@ -198,6 +293,10 @@ onUnmounted(() => {
 // 监听内容变化
 watch(() => props.content, () => {
   watchContent()
+  // 内容变化时重新开始监听编辑器
+  nextTick(() => {
+    startObserving()
+  })
 }, { immediate: true })
 </script>
 

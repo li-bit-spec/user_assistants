@@ -1,9 +1,0 @@
-com.module.config
-com.module.controller
-com.module.entity
-com.module.mapper
-com.module.service
-com.module.service.impl
-com.module.starter.annotation
-com.module.starter.autoconfigure
-com.module.starter.properties

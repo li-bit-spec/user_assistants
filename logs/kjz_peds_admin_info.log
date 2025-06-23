@@ -1,49 +1,141 @@
-2025-06-20 14:46:19 501  [main] INFO  com.module.UserAssistantApplication - Starting UserAssistantApplication on LHX with PID 8604 (F:\cursor_project\user_assistants\backend\target\classes started by 李华宪 in F:\cursor_project\user_assistants)
-2025-06-20 14:46:19 502  [main] INFO  com.module.UserAssistantApplication - The following profiles are active: sit
-2025-06-20 14:46:20 1193 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode!
-2025-06-20 14:46:20 1195 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2025-06-20 14:46:20 1219 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 10ms. Found 0 Redis repository interfaces.
-2025-06-20 14:46:20 1491 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8090 (http)
-2025-06-20 14:46:20 1496 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2025-06-20 14:46:20 1496 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.31]
-2025-06-20 14:46:20 1545 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2025-06-20 14:46:20 1545 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 1018 ms
-2025-06-20 14:46:20 1612 [main] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
-2025-06-20 14:46:21 1944 [main] INFO  c.a.druid.pool.DruidDataSource - {dataSource-1} inited
-2025-06-20 14:46:21 2508 [main] INFO  o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
-2025-06-20 14:46:22 2794 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8090 (http) with context path ''
-2025-06-20 14:46:22 2796 [main] INFO  com.module.UserAssistantApplication - Started UserAssistantApplication in 2.69 seconds (JVM running for 3.2)
-2025-06-20 14:46:22 2797 [main] INFO  com.module.UserAssistantApplication - 用户助手admin服务启动成功。。。。。。
-2025-06-20 14:46:47 28753 [http-nio-8090-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-06-20 14:46:47 28753 [http-nio-8090-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2025-06-20 14:46:47 28763 [http-nio-8090-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 9 ms
-2025-06-20 14:47:08 49417 [http-nio-8090-exec-10] INFO  c.m.c.UserFeedbackController - 接收到分页请求，页码：1，每页大小：10
-2025-06-20 14:47:08 49420 [http-nio-8090-exec-10] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始分页查询反馈列表，页码：1，每页大小：10
-2025-06-20 14:47:08 49452 [http-nio-8090-exec-10] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 分页查询结果 - 总数：12，当前页：1，每页大小：10，实际记录数：10
-2025-06-20 14:47:08 49534 [http-nio-8090-exec-10] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 返回分页结果 - 列表大小：10，总数：12
-2025-06-20 14:47:08 49534 [http-nio-8090-exec-10] INFO  c.m.c.UserFeedbackController - 返回分页结果，总数：12
-2025-06-20 14:47:15 56044 [http-nio-8090-exec-7] INFO  c.m.c.UserFeedbackController - 接收到分页请求，页码：1，每页大小：10
-2025-06-20 14:47:15 56044 [http-nio-8090-exec-7] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始分页查询反馈列表，页码：1，每页大小：10
-2025-06-20 14:47:15 56061 [http-nio-8090-exec-7] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 分页查询结果 - 总数：12，当前页：1，每页大小：10，实际记录数：10
-2025-06-20 14:47:15 56136 [http-nio-8090-exec-7] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 返回分页结果 - 列表大小：10，总数：12
-2025-06-20 14:47:15 56136 [http-nio-8090-exec-7] INFO  c.m.c.UserFeedbackController - 返回分页结果，总数：12
-2025-06-20 14:47:19 60627 [http-nio-8090-exec-3] INFO  c.m.controller.UploadController - 接收到文件上传请求，文件名：微信图片_20250302153415.jpg
-2025-06-20 14:47:19 60628 [http-nio-8090-exec-3] INFO  c.m.s.impl.AssUploadServiceImpl - 开始上传文件，文件名：微信图片_20250302153415.jpg，大小：71618
-2025-06-20 14:47:19 60628 [http-nio-8090-exec-3] INFO  c.m.s.impl.AssUploadServiceImpl - 创建上传目录成功：F:\cursor_project\user_assistants/uploads
-2025-06-20 14:47:19 60628 [http-nio-8090-exec-3] INFO  c.m.s.impl.AssUploadServiceImpl - 生成文件名：3a3c9c0b-6f8b-4588-ab54-8376228ce063.jpg
-2025-06-20 14:47:19 60630 [http-nio-8090-exec-3] INFO  c.m.s.impl.AssUploadServiceImpl - 文件保存成功：F:\cursor_project\user_assistants\uploads\3a3c9c0b-6f8b-4588-ab54-8376228ce063.jpg
-2025-06-20 14:47:19 60630 [http-nio-8090-exec-3] INFO  c.m.s.impl.AssUploadServiceImpl - 返回文件URL：/uploads/3a3c9c0b-6f8b-4588-ab54-8376228ce063.jpg
-2025-06-20 14:47:19 60630 [http-nio-8090-exec-3] INFO  c.m.controller.UploadController - 文件上传成功，URL：/uploads/3a3c9c0b-6f8b-4588-ab54-8376228ce063.jpg
-2025-06-20 14:47:23 64509 [http-nio-8090-exec-9] INFO  c.m.c.UserFeedbackController - 接收到反馈提交请求，内容：qdqd
-2025-06-20 14:47:23 64509 [http-nio-8090-exec-9] INFO  c.m.c.UserFeedbackController - 图片数量：1
-2025-06-20 14:47:23 64519 [http-nio-8090-exec-9] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始保存反馈，内容：qdqd，图片数量：1
-2025-06-20 14:47:23 64522 [http-nio-8090-exec-9] INFO  c.module.config.MyMetaObjectHandler - 开始插入填充...
-2025-06-20 14:47:23 64541 [http-nio-8090-exec-9] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 反馈保存成功，ID：53
-2025-06-20 14:47:23 64555 [http-nio-8090-exec-9] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 图片保存成功，URL：/uploads/3a3c9c0b-6f8b-4588-ab54-8376228ce063.jpg
-2025-06-20 14:47:23 64774 [http-nio-8090-exec-1] INFO  c.m.c.UserFeedbackController - 接收到分页请求，页码：1，每页大小：10
-2025-06-20 14:47:23 64774 [http-nio-8090-exec-1] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始分页查询反馈列表，页码：1，每页大小：10
-2025-06-20 14:47:24 64791 [http-nio-8090-exec-1] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 分页查询结果 - 总数：13，当前页：1，每页大小：10，实际记录数：10
-2025-06-20 14:47:24 64865 [http-nio-8090-exec-1] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 返回分页结果 - 列表大小：10，总数：13
-2025-06-20 14:47:24 64865 [http-nio-8090-exec-1] INFO  c.m.c.UserFeedbackController - 返回分页结果，总数：13
-2025-06-20 14:54:15 476068 [SpringContextShutdownHook] INFO  o.s.s.c.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
-2025-06-20 14:54:15 476069 [SpringContextShutdownHook] INFO  c.a.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-06-23 10:22:40 404  [main] INFO  com.module.UserAssistantApplication - Starting UserAssistantApplication on LHX with PID 2248 (F:\cursor_project\user_assistants\backend\target\classes started by 李华宪 in F:\cursor_project\user_assistants)
+2025-06-23 10:22:40 408  [main] INFO  com.module.UserAssistantApplication - The following profiles are active: sit
+2025-06-23 10:22:41 1078 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode!
+2025-06-23 10:22:41 1079 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-06-23 10:22:41 1102 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 11ms. Found 0 Redis repository interfaces.
+2025-06-23 10:22:41 1370 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8090 (http)
+2025-06-23 10:22:41 1376 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-06-23 10:22:41 1376 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.31]
+2025-06-23 10:22:43 3204 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-06-23 10:22:43 3204 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 2768 ms
+2025-06-23 10:22:43 3277 [main] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2025-06-23 10:22:44 3755 [main] INFO  c.a.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-06-23 10:22:44 4217 [main] INFO  o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2025-06-23 10:22:45 4466 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8090 (http) with context path ''
+2025-06-23 10:22:45 4468 [main] INFO  com.module.UserAssistantApplication - Started UserAssistantApplication in 4.375 seconds (JVM running for 11.926)
+2025-06-23 10:22:45 4469 [main] INFO  com.module.UserAssistantApplication - 用户助手admin服务启动成功。。。。。。
+2025-06-23 10:23:43 62709 [http-nio-8090-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-06-23 10:23:43 62710 [http-nio-8090-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-06-23 10:23:43 62718 [http-nio-8090-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 8 ms
+2025-06-23 10:23:46 66283 [http-nio-8090-exec-9] INFO  c.m.c.UserFeedbackController - 接收到分页请求，页码：1，每页大小：10
+2025-06-23 10:23:46 66285 [http-nio-8090-exec-9] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始分页查询反馈列表，页码：1，每页大小：10
+2025-06-23 10:23:46 66322 [http-nio-8090-exec-9] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 分页查询结果 - 总数：15，当前页：1，每页大小：10，实际记录数：10
+2025-06-23 10:23:47 66418 [http-nio-8090-exec-9] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 返回分页结果 - 列表大小：10，总数：15
+2025-06-23 10:23:47 66418 [http-nio-8090-exec-9] INFO  c.m.c.UserFeedbackController - 返回分页结果，总数：15
+2025-06-23 10:23:53 73040 [http-nio-8090-exec-4] INFO  c.m.controller.UploadController - 接收到文件上传请求，文件名：微信图片_20250302153415.jpg
+2025-06-23 10:23:53 73040 [http-nio-8090-exec-4] INFO  c.m.s.impl.AssUploadServiceImpl - 开始上传文件，文件名：微信图片_20250302153415.jpg，大小：71618
+2025-06-23 10:23:53 73040 [http-nio-8090-exec-4] INFO  c.m.s.impl.AssUploadServiceImpl - 生成文件名：74af3487-4778-409a-b968-a84f2268fc8d.jpg
+2025-06-23 10:23:53 73042 [http-nio-8090-exec-4] INFO  c.m.s.impl.AssUploadServiceImpl - 文件保存成功：F:\cursor_project\user_assistants\uploads\74af3487-4778-409a-b968-a84f2268fc8d.jpg
+2025-06-23 10:23:53 73042 [http-nio-8090-exec-4] INFO  c.m.s.impl.AssUploadServiceImpl - 返回文件URL：/uploads/74af3487-4778-409a-b968-a84f2268fc8d.jpg
+2025-06-23 10:23:53 73042 [http-nio-8090-exec-4] INFO  c.m.controller.UploadController - 文件上传成功，URL：/uploads/74af3487-4778-409a-b968-a84f2268fc8d.jpg
+2025-06-23 10:23:54 74121 [http-nio-8090-exec-8] INFO  c.m.c.UserFeedbackController - 接收到反馈提交请求，内容：呜呜呜
+2025-06-23 10:23:54 74122 [http-nio-8090-exec-8] INFO  c.m.c.UserFeedbackController - 图片数量：1
+2025-06-23 10:23:54 74132 [http-nio-8090-exec-8] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始保存反馈，内容：呜呜呜，图片数量：1
+2025-06-23 10:23:54 74135 [http-nio-8090-exec-8] INFO  c.module.config.MyMetaObjectHandler - 开始插入填充...
+2025-06-23 10:23:54 74156 [http-nio-8090-exec-8] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 反馈保存成功，ID：56
+2025-06-23 10:23:54 74170 [http-nio-8090-exec-8] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 图片保存成功，URL：/uploads/74af3487-4778-409a-b968-a84f2268fc8d.jpg
+2025-06-23 10:23:55 74515 [http-nio-8090-exec-6] INFO  c.m.c.UserFeedbackController - 接收到分页请求，页码：1，每页大小：10
+2025-06-23 10:23:55 74515 [http-nio-8090-exec-6] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始分页查询反馈列表，页码：1，每页大小：10
+2025-06-23 10:23:55 74613 [http-nio-8090-exec-6] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 分页查询结果 - 总数：16，当前页：1，每页大小：10，实际记录数：10
+2025-06-23 10:23:55 74685 [http-nio-8090-exec-6] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 返回分页结果 - 列表大小：10，总数：16
+2025-06-23 10:23:55 74685 [http-nio-8090-exec-6] INFO  c.m.c.UserFeedbackController - 返回分页结果，总数：16
+2025-06-23 10:24:00 79727 [http-nio-8090-exec-1] INFO  c.m.c.UserFeedbackController - 接收到分页请求，页码：1，每页大小：10
+2025-06-23 10:24:00 79728 [http-nio-8090-exec-1] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始分页查询反馈列表，页码：1，每页大小：10
+2025-06-23 10:24:00 80075 [http-nio-8090-exec-1] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 分页查询结果 - 总数：16，当前页：1，每页大小：10，实际记录数：10
+2025-06-23 10:24:00 80143 [http-nio-8090-exec-1] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 返回分页结果 - 列表大小：10，总数：16
+2025-06-23 10:24:00 80143 [http-nio-8090-exec-1] INFO  c.m.c.UserFeedbackController - 返回分页结果，总数：16
+2025-06-23 14:57:03 16463034 [http-nio-8090-exec-10] INFO  c.m.c.UserFeedbackController - 接收到分页请求，页码：1，每页大小：10
+2025-06-23 14:57:03 16463042 [http-nio-8090-exec-10] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始分页查询反馈列表，页码：1，每页大小：10
+2025-06-23 14:57:04 16463568 [http-nio-8090-exec-10] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 分页查询结果 - 总数：16，当前页：1，每页大小：10，实际记录数：10
+2025-06-23 14:57:04 16463663 [http-nio-8090-exec-10] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 返回分页结果 - 列表大小：10，总数：16
+2025-06-23 14:57:04 16463664 [http-nio-8090-exec-10] INFO  c.m.c.UserFeedbackController - 返回分页结果，总数：16
+2025-06-23 15:38:10 18930227 [http-nio-8090-exec-8] INFO  c.m.c.UserFeedbackController - 接收到分页请求，页码：1，每页大小：10
+2025-06-23 15:38:10 18930229 [http-nio-8090-exec-8] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始分页查询反馈列表，页码：1，每页大小：10
+2025-06-23 15:38:11 18930457 [http-nio-8090-exec-8] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 分页查询结果 - 总数：16，当前页：1，每页大小：10，实际记录数：10
+2025-06-23 15:38:11 18930556 [http-nio-8090-exec-8] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 返回分页结果 - 列表大小：10，总数：16
+2025-06-23 15:38:11 18930556 [http-nio-8090-exec-8] INFO  c.m.c.UserFeedbackController - 返回分页结果，总数：16
+2025-06-23 15:38:20 18939593 [http-nio-8090-exec-1] INFO  c.m.c.UserFeedbackController - 接收到分页请求，页码：2，每页大小：10
+2025-06-23 15:38:20 18939594 [http-nio-8090-exec-1] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始分页查询反馈列表，页码：2，每页大小：10
+2025-06-23 15:38:20 18939613 [http-nio-8090-exec-1] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 分页查询结果 - 总数：16，当前页：2，每页大小：10，实际记录数：6
+2025-06-23 15:38:20 18939670 [http-nio-8090-exec-1] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 返回分页结果 - 列表大小：6，总数：16
+2025-06-23 15:38:20 18939670 [http-nio-8090-exec-1] INFO  c.m.c.UserFeedbackController - 返回分页结果，总数：16
+2025-06-23 15:38:25 18945373 [http-nio-8090-exec-1] INFO  c.m.c.UserFeedbackController - 接收到分页请求，页码：1，每页大小：10
+2025-06-23 15:38:25 18945374 [http-nio-8090-exec-1] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始分页查询反馈列表，页码：1，每页大小：10
+2025-06-23 15:38:25 18945392 [http-nio-8090-exec-1] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 分页查询结果 - 总数：16，当前页：1，每页大小：10，实际记录数：10
+2025-06-23 15:38:26 18945517 [http-nio-8090-exec-1] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 返回分页结果 - 列表大小：10，总数：16
+2025-06-23 15:38:26 18945518 [http-nio-8090-exec-1] INFO  c.m.c.UserFeedbackController - 返回分页结果，总数：16
+2025-06-23 16:57:35 23695273 [http-nio-8090-exec-7] INFO  c.m.c.UserFeedbackController - 接收到分页请求，页码：1，每页大小：10
+2025-06-23 16:57:35 23695275 [http-nio-8090-exec-7] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始分页查询反馈列表，页码：1，每页大小：10
+2025-06-23 16:57:35 23695411 [http-nio-8090-exec-7] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 分页查询结果 - 总数：16，当前页：1，每页大小：10，实际记录数：10
+2025-06-23 16:57:36 23695503 [http-nio-8090-exec-7] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 返回分页结果 - 列表大小：10，总数：16
+2025-06-23 16:57:36 23695503 [http-nio-8090-exec-7] INFO  c.m.c.UserFeedbackController - 返回分页结果，总数：16
+2025-06-23 17:14:45 24724463 [http-nio-8090-exec-10] INFO  c.m.c.UserFeedbackController - 接收到分页请求，页码：1，每页大小：10
+2025-06-23 17:14:45 24724463 [http-nio-8090-exec-10] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始分页查询反馈列表，页码：1，每页大小：10
+2025-06-23 17:14:45 24724814 [http-nio-8090-exec-10] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 分页查询结果 - 总数：16，当前页：1，每页大小：10，实际记录数：10
+2025-06-23 17:14:45 24724901 [http-nio-8090-exec-10] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 返回分页结果 - 列表大小：10，总数：16
+2025-06-23 17:14:45 24724901 [http-nio-8090-exec-10] INFO  c.m.c.UserFeedbackController - 返回分页结果，总数：16
+2025-06-23 17:17:15 24874755 [http-nio-8090-exec-7] INFO  c.m.c.UserFeedbackController - 接收到分页请求，页码：1，每页大小：10
+2025-06-23 17:17:15 24874756 [http-nio-8090-exec-7] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始分页查询反馈列表，页码：1，每页大小：10
+2025-06-23 17:17:15 24874779 [http-nio-8090-exec-7] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 分页查询结果 - 总数：16，当前页：1，每页大小：10，实际记录数：10
+2025-06-23 17:17:15 24874865 [http-nio-8090-exec-7] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 返回分页结果 - 列表大小：10，总数：16
+2025-06-23 17:17:15 24874865 [http-nio-8090-exec-7] INFO  c.m.c.UserFeedbackController - 返回分页结果，总数：16
+2025-06-23 17:18:51 24971384 [http-nio-8090-exec-1] INFO  c.m.c.UserFeedbackController - 接收到分页请求，页码：1，每页大小：10
+2025-06-23 17:18:51 24971385 [http-nio-8090-exec-1] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 开始分页查询反馈列表，页码：1，每页大小：10
+2025-06-23 17:18:51 24971402 [http-nio-8090-exec-1] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 分页查询结果 - 总数：16，当前页：1，每页大小：10，实际记录数：10
+2025-06-23 17:18:52 24971550 [http-nio-8090-exec-1] INFO  c.m.s.i.AssUserFeedbackServiceImpl - 返回分页结果 - 列表大小：10，总数：16
+2025-06-23 17:18:52 24971550 [http-nio-8090-exec-1] INFO  c.m.c.UserFeedbackController - 返回分页结果，总数：16
+2025-06-23 17:31:14 25714358 [SpringContextShutdownHook] INFO  o.s.s.c.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
+2025-06-23 17:31:14 25714363 [SpringContextShutdownHook] INFO  c.a.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-06-23 17:38:59 1049 [main] INFO  com.module.UserAssistantApplication - Starting UserAssistantApplication on LHX with PID 38188 (F:\cursor_project\user_assistants\backend\target\classes started by 李华宪 in F:\cursor_project\user_assistants)
+2025-06-23 17:38:59 1053 [main] INFO  com.module.UserAssistantApplication - The following profiles are active: sit
+2025-06-23 17:39:00 2060 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode!
+2025-06-23 17:39:00 2062 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-06-23 17:39:00 2093 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 14ms. Found 0 Redis repository interfaces.
+2025-06-23 17:39:01 3192 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8090 (http)
+2025-06-23 17:39:01 3202 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-06-23 17:39:01 3204 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.31]
+2025-06-23 17:39:01 3273 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-06-23 17:39:01 3274 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 2172 ms
+2025-06-23 17:39:01 3390 [main] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2025-06-23 17:39:02 3667 [main] INFO  c.a.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-06-23 17:39:02 3674 [main] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+2025-06-23 17:39:02 3686 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLoggingListener - 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2025-06-23 17:40:24 931  [main] INFO  com.module.UserAssistantApplication - Starting UserAssistantApplication on LHX with PID 28252 (F:\cursor_project\user_assistants\backend\target\classes started by 李华宪 in F:\cursor_project\user_assistants)
+2025-06-23 17:40:24 933  [main] INFO  com.module.UserAssistantApplication - The following profiles are active: sit
+2025-06-23 17:40:25 1560 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode!
+2025-06-23 17:40:25 1565 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-06-23 17:40:25 1599 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 17ms. Found 0 Redis repository interfaces.
+2025-06-23 17:40:26 2607 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8090 (http)
+2025-06-23 17:40:26 2616 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-06-23 17:40:26 2616 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.31]
+2025-06-23 17:40:26 2684 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-06-23 17:40:26 2685 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 1700 ms
+2025-06-23 17:40:26 2833 [main] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2025-06-23 17:40:26 3252 [main] INFO  c.a.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-06-23 17:40:27 4037 [main] INFO  o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2025-06-23 17:40:27 4529 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8090 (http) with context path ''
+2025-06-23 17:40:27 4532 [main] INFO  com.module.UserAssistantApplication - Started UserAssistantApplication in 4.23 seconds (JVM running for 4.761)
+2025-06-23 17:40:27 4533 [main] INFO  com.module.UserAssistantApplication - 用户助手admin服务启动成功。。。。。。
+2025-06-23 17:40:34 11091 [http-nio-8090-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-06-23 17:40:34 11092 [http-nio-8090-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-06-23 17:40:34 11099 [http-nio-8090-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 7 ms
+2025-06-23 17:41:48 85127 [SpringContextShutdownHook] INFO  o.s.s.c.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
+2025-06-23 17:41:48 85132 [SpringContextShutdownHook] INFO  c.a.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-06-23 17:41:53 796  [main] INFO  com.module.UserAssistantApplication - Starting UserAssistantApplication on LHX with PID 41728 (F:\cursor_project\user_assistants\backend\target\classes started by 李华宪 in F:\cursor_project\user_assistants)
+2025-06-23 17:41:53 799  [main] INFO  com.module.UserAssistantApplication - The following profiles are active: sit
+2025-06-23 17:41:53 1339 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode!
+2025-06-23 17:41:53 1342 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-06-23 17:41:53 1378 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 19ms. Found 0 Redis repository interfaces.
+2025-06-23 17:41:54 2274 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8090 (http)
+2025-06-23 17:41:54 2283 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-06-23 17:41:54 2284 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.31]
+2025-06-23 17:41:54 2353 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-06-23 17:41:54 2354 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 1513 ms
+2025-06-23 17:41:54 2484 [main] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2025-06-23 17:41:55 2678 [main] INFO  c.a.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-06-23 17:41:55 2683 [main] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+2025-06-23 17:41:55 2690 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLoggingListener - 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.

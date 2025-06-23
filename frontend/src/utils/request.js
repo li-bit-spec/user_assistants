@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { ElMessage } from 'element-plus'
 
 // 创建 axios 实例
 const service = axios.create({
@@ -24,13 +23,9 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data
-    // 如果返回的状态码不是0，说明接口有问题，把错误信息显示出来
+    // 如果返回的状态码不是0，说明接口有问题，直接抛出错误让业务层处理
     if (res.code !== 0) {
-      ElMessage({
-        message: res.message || '请求失败',
-        type: 'error',
-        duration: 5 * 1000
-      })
+      // 不在这里显示错误消息，让业务层处理
       return Promise.reject(new Error(res.message || '请求失败'))
     } else {
       return res
@@ -38,11 +33,8 @@ service.interceptors.response.use(
   },
   error => {
     console.error('响应错误:', error)
-    ElMessage({
-      message: error.message || '请求失败',
-      type: 'error',
-      duration: 5 * 1000
-    })
+    // 不在这里显示错误消息，让业务层统一处理
+    // 保留原始错误信息供业务层判断
     return Promise.reject(error)
   }
 )

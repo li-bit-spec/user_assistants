@@ -1,0 +1,23 @@
+cmd.exe
+/X
+/C
+"E:\jdk17\bin\javadoc.exe -Xdoclint:none -J-Dfile.encoding=UTF-8 @options @packages"
+F:\cursor_project\user_assistants\user-assistant-spring-boot-starter\target\apidocs\allclasses-index.html = 1750673451061
+F:\cursor_project\user_assistants\user-assistant-spring-boot-starter\target\apidocs\allpackages-index.html = 1750673451065
+F:\cursor_project\user_assistants\user-assistant-spring-boot-starter\target\apidocs\element-list = 1750673450777
+F:\cursor_project\user_assistants\user-assistant-spring-boot-starter\target\apidocs\help-doc.html = 1750673451118
+F:\cursor_project\user_assistants\user-assistant-spring-boot-starter\target\apidocs\index-all.html = 1750673451104
+F:\cursor_project\user_assistants\user-assistant-spring-boot-starter\target\apidocs\index.html = 1750673451012
+F:\cursor_project\user_assistants\user-assistant-spring-boot-starter\target\apidocs\jquery-ui.overrides.css = 1750673451126
+F:\cursor_project\user_assistants\user-assistant-spring-boot-starter\target\apidocs\member-search-index.js = 1750673451078
+F:\cursor_project\user_assistants\user-assistant-spring-boot-starter\target\apidocs\module-search-index.js = 1750673451074
+F:\cursor_project\user_assistants\user-assistant-spring-boot-starter\target\apidocs\options = 1750673448850
+F:\cursor_project\user_assistants\user-assistant-spring-boot-starter\target\apidocs\overview-summary.html = 1750673451108
+F:\cursor_project\user_assistants\user-assistant-spring-boot-starter\target\apidocs\overview-tree.html = 1750673451001
+F:\cursor_project\user_assistants\user-assistant-spring-boot-starter\target\apidocs\package-search-index.js = 1750673451076
+F:\cursor_project\user_assistants\user-assistant-spring-boot-starter\target\apidocs\packages = 1750673448852
+F:\cursor_project\user_assistants\user-assistant-spring-boot-starter\target\apidocs\script.js = 1750673451120
+F:\cursor_project\user_assistants\user-assistant-spring-boot-starter\target\apidocs\search.js = 1750673451121
+F:\cursor_project\user_assistants\user-assistant-spring-boot-starter\target\apidocs\stylesheet.css = 1750673451119
+F:\cursor_project\user_assistants\user-assistant-spring-boot-starter\target\apidocs\tag-search-index.js = 1750673451079
+F:\cursor_project\user_assistants\user-assistant-spring-boot-starter\target\apidocs\type-search-index.js = 1750673451077

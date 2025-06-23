@@ -7,6 +7,11 @@
 - 确保有足够的磁盘空间
 - 检查目标目录权限
 
+修改前端页面之后，
+执行npm run build ，
+并将dist目录下文件复制到static目录下，
+执行mvn clean install -DskipTests ，
+然后执行mvn clean deploy -P release
 ## 📁 复制步骤
 
 ### 方式一：完整复制（推荐）
@@ -39,10 +44,13 @@ rm -f *.iml
 
 ```xml
 <!-- 可能需要修改的部分 -->
-<groupId>com.yourcompany</groupId>
-<artifactId>user-assistant-spring-boot-starter</artifactId>
-<version>1.0.0-SNAPSHOT</version>
-
+<dependency>
+    <groupId>com.yourcompany</groupId>
+    <artifactId>user-assistant-spring-boot-starter</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
+```
+```
 <!-- 修改仓库配置 -->
 <distributionManagement>
     <repository>
